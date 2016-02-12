@@ -33,4 +33,6 @@ public class WeatherDayApplication extends Application
       public static Context getContext() {
           return instance.getApplicationContext();
       }
+
+
 }
