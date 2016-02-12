@@ -1,5 +1,4 @@
 package com.daoofdev.weatherday;
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (c) 2016 Dao of Development, LLC.
@@ -8,24 +7,20 @@ package com.daoofdev.weatherday;
  * Mozilla Public License, version 2.0. The full text of the
  * Mozilla Public License is at https://www.mozilla.org/MPL/2.0/
  *
- * File:    WeatherMapInterface.java
+ * File:    Util.java
  * Project: WeatherDay
  *
  * Created by Lilli Szafranski on 2/11/16.
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-/**
- * To work on unit tests, switch the Test Artifact in the Build Variants view.
- */
-public class ExampleUnitTest
+public class Util
 {
-    @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+    private final static String TAG = "WeatherDay:Util";
+
+    public static String getMethodName() {
+        return Thread.currentThread().getStackTrace()[3].getMethodName();
     }
+
 }
