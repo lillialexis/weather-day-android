@@ -52,6 +52,20 @@ public class MainActivity extends AppCompatActivity
             Log.d(TAG, String.format("Lat: %f Lon: %f", location.getLatitude(), location.getLongitude()));
         else
             Log.d(TAG, "Location is null");
+
+        if (location != null && WeatherMapWrapper.canConnectToOpenWeather())
+            WeatherMapWrapper.getWeatherDataForLocation(location, new WeatherMapWrapper.WeatherMapWrapperListener()
+            {
+                @Override
+                public void onWeatherDataReceived(CurrentWeatherData data) {
+                    Log.d(TAG, Util.getMethodName());
+                }
+
+                @Override
+                public void onWeatherDataFailed(Throwable error) {
+                    Log.d(TAG, Util.getMethodName());
+                }
+            });
     }
 
 //    /**
