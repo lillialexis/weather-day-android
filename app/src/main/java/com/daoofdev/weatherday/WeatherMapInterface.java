@@ -1,5 +1,4 @@
 package com.daoofdev.weatherday;
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (c) 2016 Dao of Development, LLC.
@@ -15,17 +14,18 @@ package com.daoofdev.weatherday;
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-/**
- * To work on unit tests, switch the Test Artifact in the Build Variants view.
- */
-public class ExampleUnitTest
+public class WeatherMapInterface
 {
-    @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+    private final static String TAG = "WeatherDay:WeatherMapInterface";
+
+    private final static String WEATHER_MAP_API_KEY = "bd70ff217db31d2f80c85e6e09b85dbf";
+
+    private static WeatherMapInterface ourInstance = new WeatherMapInterface();
+
+    public static WeatherMapInterface getInstance() {
+        return ourInstance;
+    }
+
+    private WeatherMapInterface() {
     }
 }
