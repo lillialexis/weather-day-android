@@ -14,12 +14,18 @@ package com.daoofdev.weatherday;
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.RequiresPermission;
+import android.support.v4.app.ActivityCompat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -41,7 +47,8 @@ public class LocationWrapper
     /* The minimum time interval between location updates, in milliseconds */
     private static final long MIN_TIME_INTERVAL_BETWEEN_UPDATES = 1;
 
-    private static LocationManager locationManager = (LocationManager)WeatherDayApplication.getContext().getSystemService(Context.LOCATION_SERVICE);
+    private static LocationManager locationManager = (LocationManager)WeatherDayApplication.getContext()
+                                                                                           .getSystemService(Context.LOCATION_SERVICE);
 
     private static LocationListener locationListener = new LocationListener()
     {
@@ -96,17 +103,22 @@ public class LocationWrapper
      * be out-of-date, for example if the device was turned off and
      * moved to another location.
      *
-     * <p> If the both providers are currently disabled, null is returned.
+     * <p> If the both providers are currently disabled, or permission isn't
+     * granted, null is returned.
      *
      * @return the last known location for the preferred provider, or null
      *
      * @throws SecurityException if no suitable permission is present
-     * @throws IllegalArgumentException if provider is null or doesn't exist
      */
-    @RequiresPermission(anyOf = {ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION})
     public static Location getLastKnownLocation() {
         String preferredProvider = getPreferredProvider();
         if (preferredProvider == null) /* Then neither provider is configured */
+            return null;
+
+        if (ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED)
             return null;
 
         return locationManager.getLastKnownLocation(getPreferredProvider());
