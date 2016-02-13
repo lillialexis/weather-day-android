@@ -201,8 +201,8 @@ public class MainActivity extends AppCompatActivity
             setTextForTextViewAndShow("Currently in %s%s", mCurrentWeatherData.getName(), "", mCurrentlyInLabel);
 
             if ((mainData = mCurrentWeatherData.getMainData()) != null) {
-                setTextForTextViewAndShow("%s°%s", mainData.getTemp(mTempUnits), mTempUnits.toString(), mCurrentTempLabel);
-                setTextForTextViewAndShow("%s%s Humidity", mainData.getHumidity(), "%", mCurrentHumidityLabel);
+                setTextForTextViewAndShow("%s°%s", mainData.getPrettyTemp(mTempUnits), mTempUnits.toString(), mCurrentTempLabel);
+                setTextForTextViewAndShow("Humidity: %s%s", mainData.getHumidity(), "%", mCurrentHumidityLabel);
             }
 
             if (mCurrentWeatherData.getWeatherItems() != null && mCurrentWeatherData.getWeatherItems().get(0) != null) {
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             if ((wind = mCurrentWeatherData.getWind()) != null) {
-                setTextForTextViewAndShow("Wind: %s %s", wind.getSpeed(mSpeedUnits), mSpeedUnits.toString(), mCurrentWindSpeedLabel);
+                setTextForTextViewAndShow("Wind: %s %s", wind.getPrettySpeed(mSpeedUnits), mSpeedUnits.toString(), mCurrentWindSpeedLabel);
                 setTextForTextViewAndShow("%s%s", wind.getPrettyDirection(), "", mCurrentWindDirectionLabel);
             }
 
@@ -224,8 +224,8 @@ public class MainActivity extends AppCompatActivity
             }
 
             if ((system = mCurrentWeatherData.getSystem()) != null) {
-                setTextForTextViewAndShow("Sunrise: %s %s", system.getSunrise(), "AM", mSunriseLabel);
-                setTextForTextViewAndShow("Sunset: %s %s", system.getSunset(), "PM", mSunsetLabel);
+                setTextForTextViewAndShow("Sunrise: %s %s", system.getPrettySunrise(), "AM", mSunriseLabel);
+                setTextForTextViewAndShow("Sunset: %s %s", system.getPrettySunset(), "PM", mSunsetLabel);
             }
         }
 
@@ -234,12 +234,12 @@ public class MainActivity extends AppCompatActivity
                 ForecastItem forecastItem = mForecastWeatherData.getList().get(0);
 
                 if ((temperature = forecastItem.getTemperature()) != null) {
-                    setTextForTextViewAndShow("%s°%s", temperature.getDay(mTempUnits), mTempUnits.toString(), mForecastTempLabel);
-                    setTextForTextViewAndShow("High: %s°%s", temperature.getMax(mTempUnits), mTempUnits.toString(), mForecastHighTempLabel);
-                    setTextForTextViewAndShow("Low: %s°%s", temperature.getMin(mTempUnits), mTempUnits.toString(), mForecastLowTempLabel);
+                    setTextForTextViewAndShow("%s°%s", temperature.getPrettyDay(mTempUnits), mTempUnits.toString(), mForecastTempLabel);
+                    setTextForTextViewAndShow("High: %s°%s", temperature.getPrettyMax(mTempUnits), mTempUnits.toString(), mForecastHighTempLabel);
+                    setTextForTextViewAndShow("Low: %s°%s", temperature.getPrettyMin(mTempUnits), mTempUnits.toString(), mForecastLowTempLabel);
                 }
 
-                setTextForTextViewAndShow("%s%s Humidity", forecastItem.getHumidity(), "%", mForecastHumidityLabel);
+                setTextForTextViewAndShow("Humidity: %s%s", forecastItem.getHumidity(), "%", mForecastHumidityLabel);
 
                 if (forecastItem.getWeatherItems() != null && forecastItem.getWeatherItems().get(0) != null) {
                     WeatherItem weatherItem = forecastItem.getWeatherItems().get(0);
@@ -248,10 +248,10 @@ public class MainActivity extends AppCompatActivity
                     setTextForTextViewAndShow("%s%s", weatherItem.getDescription(), "", mForecastDetailedDescriptionLabel);
                 }
 
-                setTextForTextViewAndShow("Wind: %s %s", forecastItem.getSpeed(mSpeedUnits), mSpeedUnits.toString(), mForecastWindSpeedLabel);
+                setTextForTextViewAndShow("Wind: %s %s", forecastItem.getPrettySpeed(mSpeedUnits), mSpeedUnits.toString(), mForecastWindSpeedLabel);
                 setTextForTextViewAndShow("%s%s", forecastItem.getPrettyDirection(), "", mForecastWindDirectionLabel);
                 setTextForTextViewAndShow("Clouds: %s%s", forecastItem.getClouds(), "%", mForecastCloudsLabel);
-                setTextForTextViewAndShow("Clouds: %s%s", forecastItem.getRain(mDepthUnits), mDepthUnits.toString(), mForecastRainLabel);
+                setTextForTextViewAndShow("Rain: %s%s", forecastItem.getPrettyRain(mDepthUnits), mDepthUnits.toString(), mForecastRainLabel);
 
                 setTextForTextViewAndShow("%s%s", null, "", mForecastPressureLabel);
 

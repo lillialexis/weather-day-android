@@ -16,6 +16,8 @@ package com.daoofdev.weatherday.WeatherData;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.text.DecimalFormat;
+
 public class Wind {
     private final static String TAG = "WeatherDay:Wind";
     @SerializedName("speed")
@@ -37,6 +39,10 @@ public class Wind {
 
     public Double getSpeed(Constants.SpeedUnits units) {
         return Constants.convertedSpeed(mSpeed, units);
+    }
+
+    public String getPrettySpeed(Constants.SpeedUnits units) {
+        return new DecimalFormat("#.##").format(getSpeed(units));
     }
 
     public String getPrettyDirection() {

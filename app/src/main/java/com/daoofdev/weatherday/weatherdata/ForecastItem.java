@@ -17,6 +17,7 @@ package com.daoofdev.weatherday.WeatherData;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class ForecastItem {
@@ -84,12 +85,20 @@ public class ForecastItem {
         return Constants.convertDepth(mRain, units);
     }
 
+    public String getPrettyRain(Constants.DepthUnits units) {
+        return new DecimalFormat("#.##").format(getRain(units));
+    }
+
     public Double getSpeedRaw() {
         return mSpeed;
     }
 
     public Double getSpeed(Constants.SpeedUnits units) {
         return Constants.convertedSpeed(mSpeed, units);
+    }
+
+    public String getPrettySpeed(Constants.SpeedUnits units) {
+        return new DecimalFormat("#.##").format(getSpeed(units));
     }
 
     public String getPrettyDirection() {

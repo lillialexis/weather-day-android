@@ -69,6 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/current_wind_speed_label"
+            android:layout_alignBottom="@+id/current_wind_speed_label"
             />
 
         <TextView
@@ -93,10 +94,18 @@
             />
 
         <TextView
-            android:id="@+id/forecast_temp_label"
+            android:id="@+id/forecast_today_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/current_pressure_label"
+            />
+
+        <TextView
+            android:id="@+id/forecast_temp_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/forecast_today_label"
+            android:text="Today:"
             />
 
         <TextView
@@ -146,6 +155,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/forecast_wind_speed_label"
+            android:layout_alignBottom="@+id/forecast_wind_speed_label"
             />
 
         <TextView
@@ -169,8 +179,6 @@
             android:layout_below="@+id/forecast_humidity_label"
             />
 
-
-
         <TextView
             android:id="@+id/sunrise_label"
             android:layout_width="wrap_content"
@@ -191,6 +199,7 @@
             android:id="@+id/weather_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/currently_in_label"
         />
     </RelativeLayout>
 
