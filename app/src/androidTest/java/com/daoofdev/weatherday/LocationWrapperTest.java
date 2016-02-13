@@ -24,14 +24,14 @@ public class LocationWrapperTest extends AndroidTestCase
     * @see junit.framework.TestCase#setUp()
     */
     protected void setUp() throws Exception {
-       super.setUp();
+        super.setUp();
     }
 
     /* (non-Javadoc)
     * @see junit.framework.TestCase#tearDown()
     */
     protected void tearDown() throws Exception {
-       super.tearDown();
+        super.tearDown();
     }
 
     public final void testCase() {

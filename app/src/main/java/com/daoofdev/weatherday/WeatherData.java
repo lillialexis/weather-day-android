@@ -30,6 +30,9 @@ public class WeatherData
     @SerializedName("weather")
     private ArrayList<WeatherItem> mWeatherItems = null;
 
+    @SerializedName("main")
+    private MainData mMainData = null;
+
     @SerializedName("wind")
     private Wind mWind     = null;
 
@@ -37,7 +40,7 @@ public class WeatherData
     private Clouds mClouds = null;
 
     @SerializedName("dt")
-    private Integer mDt    = 0;
+    private Long mDt    = 0L;
 
     @SerializedName("sys")
     private System mSystem = null;
@@ -124,7 +127,7 @@ public class WeatherData
         private Double mPressure   = 0.0;
 
         @SerializedName("humidity")
-        private Double mHumidity   = 0.0;
+        private Integer mHumidity   = 0;
 
         @SerializedName("temp_min")
         private Double mTempMin    = 0.0;
@@ -136,16 +139,16 @@ public class WeatherData
         private Double mSeaLevel   = 0.0;
 
         @SerializedName("grnd_level")
-        private Double mGrndLevel  = 0.0;
+        private Double mGroundLevel = 0.0;
 
         public MainData() {
         }
 
-        public Double getGrndLevel() {
-            return mGrndLevel;
+        public Double getGroundLevel() {
+            return mGroundLevel;
         }
 
-        public Double getHumidity() {
+        public Integer getHumidity() {
             return mHumidity;
         }
 
@@ -193,12 +196,12 @@ public class WeatherData
     public class Clouds
     {
         @SerializedName("all")
-        private Double mAll = 0.0;
+        private Integer mAll = 0;
 
         public Clouds() {
         }
 
-        public Double getAll() {
+        public Integer getAll() {
             return mAll;
         }
     }
@@ -252,7 +255,7 @@ public class WeatherData
         return mCoordinate;
     }
 
-    public Integer getDt() {
+    public Long getDt() {
         return mDt;
     }
 
@@ -270,6 +273,10 @@ public class WeatherData
 
     public ArrayList<WeatherItem> getWeatherItems() {
         return mWeatherItems;
+    }
+
+    public MainData getMainData() {
+        return mMainData;
     }
 
     public Wind getWind() {
