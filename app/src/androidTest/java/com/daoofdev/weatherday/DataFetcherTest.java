@@ -7,7 +7,7 @@ package com.daoofdev.weatherday;
  * Mozilla Public License, version 2.0. The full text of the
  * Mozilla Public License is at https://www.mozilla.org/MPL/2.0/
  *
- * File:    LocationWrapperTest.java
+ * File:    DataFetcherTest.java
  * Project: WeatherDay
  *
  * Created by Lilli Szafranski on 2/11/16.
@@ -16,7 +16,7 @@ package com.daoofdev.weatherday;
 
 import android.test.AndroidTestCase;
 
-public class LocationWrapperTest extends AndroidTestCase
+public class DataFetcherTest extends AndroidTestCase
 {
     private final static String TAG = "WeatherDay:WeatherMapWrapperTest";
 
@@ -38,26 +38,39 @@ public class LocationWrapperTest extends AndroidTestCase
 
     }
 
-    public final void testUnavailableLocationServices() {
+    public final void testFetchingText() {
         assertTrue("Implement test case", false);
     }
 
-    public final void testUnpermittedLocationServices() { // TODO: Probably don't need separate test cases for this... just need to test on device under various conditions
+    public final void testFetchingImages() {
         assertTrue("Implement test case", false);
     }
 
-    public final void testGPSAndNetworkAvailable() {
+    public final void testFetchingSomeOtherDataTypes() {
         assertTrue("Implement test case", false);
     }
 
-    public final void testGPSUnavailableNetworkAvailable() {
+    public final void testInvalidParams() {
         assertTrue("Implement test case", false);
     }
 
-    public final void testGPSAvailableNetworkUnavailable() {
+    public final void testVariousInvalidUrls() {
         assertTrue("Implement test case", false);
     }
 
+    public final void testReceivingDifferentHtmlCodes() {
+        assertTrue("Implement test case", false);
+    }
 
+    public final void testSlowNetworkConditions() { // TODO: Probably don't need separate test cases for this... just need to test on device under various conditions
+        assertTrue("Implement test case", false);
+    }
 
+    public final void testChangingNetworkConditions() {
+        assertTrue("Implement test case", false);
+    }
+
+    public final void testUnavailableNetworkThings() {
+        assertTrue("Implement test case", false);
+    }
 }

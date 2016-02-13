@@ -96,17 +96,6 @@ public class DataFetcher extends AsyncTask<String, String, Throwable>
         return null;
     }
 
-//        @Override
-//        protected void onProgressUpdate(String... params) {
-//            Log.d(TAG, Util.getMethodName());
-//
-//            super.onProgressUpdate(params);
-//
-//            String newData = params[0];
-//
-//            jsonString += newData;
-//        }
-
     protected void onPostExecute(Throwable result) {
         Log.d(TAG, Util.getMethodName());
 

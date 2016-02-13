@@ -20,22 +20,37 @@ public class WeatherMapWrapperTest extends AndroidTestCase
 {
     private final static String TAG = "WeatherDay:WeatherMapWrapperTest";
 
-       /* (non-Javadoc)
-        * @see junit.framework.TestCase#setUp()
-        */
-       protected void setUp() throws Exception {
-           super.setUp();
-       }
+    /* (non-Javadoc)
+    * @see junit.framework.TestCase#setUp()
+    */
+    protected void setUp() throws Exception {
+       super.setUp();
+    }
 
-       /* (non-Javadoc)
-        * @see junit.framework.TestCase#tearDown()
-        */
-       protected void tearDown() throws Exception {
-           super.tearDown();
-       }
+    /* (non-Javadoc)
+    * @see junit.framework.TestCase#tearDown()
+    */
+    protected void tearDown() throws Exception {
+       super.tearDown();
+    }
 
-       public final void testCase() {
+    public final void testCase() {
 
-       }
+    }
 
+    public final void testFetchingWeatherData() {
+        assertTrue("Implement test case", false);
+    }
+
+    public final void testFetchingIcon() {
+        assertTrue("Implement test case", false);
+    }
+
+    public final void testFetchingWeatherWithInvalidParams() {
+        assertTrue("Implement test case", false);
+    }
+
+    public final void testFetchingIconWithInvalidParams() {
+        assertTrue("Implement test case", false);
+    }
 }
