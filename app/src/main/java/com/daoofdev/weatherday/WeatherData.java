@@ -15,13 +15,14 @@ package com.daoofdev.weatherday;
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+import android.graphics.Bitmap;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-public class CurrentWeatherData
+public class WeatherData
 {
-    private final static String TAG = "HVACAndroid:CurrentWeatherData";
+    private final static String TAG = "WeatherDay:CurrentWeatherData";
 
     @SerializedName("coord")
     private Coordinate mCoordinate = null;
@@ -82,7 +83,9 @@ public class CurrentWeatherData
         private String  mDescription = null;
 
         @SerializedName("icon")
-        private String  mIcon        = null;
+        private String mIconIdStr    = null;
+
+        private Bitmap mIconImage    = null;
 
         public WeatherItem() {
         }
@@ -91,8 +94,8 @@ public class CurrentWeatherData
             return mDescription;
         }
 
-        public String getIcon() {
-            return mIcon;
+        public String getIconIdStr() {
+            return mIconIdStr;
         }
 
         public Integer getId() {
@@ -102,11 +105,18 @@ public class CurrentWeatherData
         public String getMain() {
             return mMain;
         }
+
+        public Bitmap getIconImage() {
+            return mIconImage;
+        }
+
+        public void setIconImage(Bitmap iconImage) {
+            mIconImage = iconImage;
+        }
     }
 
     public class MainData
     {
-
         @SerializedName("temp")
         private Double mTemp       = 0.0;
 
@@ -227,7 +237,7 @@ public class CurrentWeatherData
         }
     }
 
-    public CurrentWeatherData() {
+    public WeatherData() {
     }
 
     public Clouds getClouds() {

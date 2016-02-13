@@ -16,18 +16,16 @@ package com.daoofdev.weatherday;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.util.Log;
 import com.google.gson.Gson;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
 @SuppressLint("LongLogTag")
 public class WeatherMapWrapper
@@ -36,22 +34,40 @@ public class WeatherMapWrapper
 
     private final static String WEATHER_MAP_API_KEY = "bd70ff217db31d2f80c85e6e09b85dbf";
 
-    private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/";
+    private static final String BASE_URL = "http://api.openweathermap.org/";
 
-    private static final String METHOD_QUERY = "weather?";
+    private static final String GET_WEATHER_METHOD_QUERY = "data/2.5/weather?";
+    private static final String GET_ICON_METHOD_QUERY    = "img/w/";
 
     private static final String LAT_QUERY = "lat=";
     private static final String LON_QUERY = "&lon=";
     private static final String API_QUERY = "&appid=";
 
+    private static final String METHOD_KEY_GET_WEATHER = "METHOD_KEY_GET_WEATHER";
+    private static final String METHOD_KEY_GET_ICON    = "METHOD_KEY_GET_ICON";
 
-    public interface WeatherMapWrapperListener
+    private static final String USER_INFO_METHOD_KEY_KEY   = "USER_INFO_METHOD_KEY_KEY";
+    private static final String USER_INFO_LISTENER_KEY     = "USER_INFO_LISTENER_KEY";
+    private static final String USER_INFO_WEATHER_ITEM_KEY = "USER_INFO_WEATHER_ITEM_KEY";
+
+    public interface WeatherFetcherListener
     {
-        void onWeatherDataReceived(CurrentWeatherData data);
+        void onWeatherFetchSucceeded(WeatherData data);
 
-        void onWeatherDataFailed(Throwable error);
+        void onWeatherFetchFailed(Throwable error);
     }
 
+    public interface IconFetcherListener
+    {
+        void onIconFetchSucceeded(WeatherData.WeatherItem item);
+
+        void onIconFetchFailed(Throwable error);
+    }
+
+    /**
+     * Tells whether the WeatherMapWrapper can connect to the OpenWeatherMap API (though I really only check if the network is available).
+     * @return True, if the wrapper can connect to the OpenWeatherMap API, false otherwise.
+     */
     public static Boolean canConnectToOpenWeather() {
         Log.d(TAG, Util.getMethodName());
 
@@ -61,104 +77,137 @@ public class WeatherMapWrapper
         return (networkInfo != null && networkInfo.isConnected());
     }
 
-    public static void getWeatherDataForLocation(Location location, WeatherMapWrapperListener listener) {
+    /**
+     * Get's the CurrentWeatherData object from the OpenWeatherMap API for the provided location.
+     * @param location The location for which the weather is fetched.
+     * @param listener The listener notified when the fetch failed or succeeded.
+     */
+    public static void fetchCurrentWeatherForLocation(Location location, WeatherFetcherListener listener) {
         Log.d(TAG, Util.getMethodName());
 
-        String url = BASE_URL + METHOD_QUERY + LAT_QUERY + location.getLatitude() + LON_QUERY + location.getLatitude() + API_QUERY + WEATHER_MAP_API_KEY;
-        new WeatherFetcher(listener).execute(url);
+        /* Create the url for this request. */
+        String url = BASE_URL + GET_WEATHER_METHOD_QUERY +
+                LAT_QUERY + location.getLatitude() +
+                LON_QUERY + location.getLatitude() +
+                API_QUERY + WEATHER_MAP_API_KEY;
+
+        /* Create a HashMap to store my method key and the delegate. */
+        HashMap<String, Object> userInfo = new HashMap<>();
+        userInfo.put(USER_INFO_METHOD_KEY_KEY, METHOD_KEY_GET_WEATHER);
+        userInfo.put(USER_INFO_LISTENER_KEY, listener);
+
+        /* Create a new DataFetcher Object, passing in a HashMap containing the specific method and specific delegate, then invoke the URL. */
+        new DataFetcher(userInfo, dataFetcherListener).execute(url);
     }
 
-    private static class WeatherFetcher extends AsyncTask<String, String, Throwable>
+    /**
+     * Get's the icon file for the CurrentWeatherData object, from the OpenWeatherMap API.
+     * @param weatherItem The weather item object for which the icon file is being downloaded
+     * @param listener    The listener notified when the fetch failed or succeeded.
+     */
+    public static void getIconForWeatherData(WeatherData.WeatherItem weatherItem, IconFetcherListener listener) {
+        Log.d(TAG, Util.getMethodName());
+
+        /* Create the url for this request. */
+        String url = BASE_URL + GET_ICON_METHOD_QUERY +
+                weatherItem.getIconIdStr();
+
+        /* Create a HashMap to store my method key, WeatherItem, and the delegate. */
+        HashMap<String, Object> userInfo = new HashMap<>();
+        userInfo.put(USER_INFO_METHOD_KEY_KEY, METHOD_KEY_GET_ICON);
+        userInfo.put(USER_INFO_WEATHER_ITEM_KEY, weatherItem);
+        userInfo.put(USER_INFO_LISTENER_KEY, listener);
+
+        /* Create a new DataFetcher Object, passing in a HashMap containing the stuffs, then invoke the URL. */
+        new DataFetcher(userInfo, dataFetcherListener).execute(url);
+    }
+
+    private static DataFetcher.DataFetcherListener dataFetcherListener = new DataFetcher.DataFetcherListener()
     {
-        WeatherMapWrapperListener mListener;
-        InputStream inputStream = null;
+        @Override
+        public void onDidFetchData(Object userInfo, byte[] data) {
+            String methodKey = (String)((HashMap)userInfo).get(USER_INFO_METHOD_KEY_KEY);
 
-        String jsonString = "";
+            switch (methodKey) {
 
-        WeatherFetcher(WeatherMapWrapperListener listener) {
-            mListener = listener;
+                /* In this case, it's a json string representing the current weather data. */
+                case METHOD_KEY_GET_WEATHER:
+
+                    /* Get our listener from the userInfo object. */
+                    WeatherFetcherListener weatherFetcherListener = (WeatherFetcherListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
+
+                    /* Decode the bytes into a json string, then deserialize into a WeatherData object. */
+                    try {
+                        String jsonString = new String(data, "UTF-8");
+
+                        Log.d(TAG, "Weather data: " + jsonString);
+
+                        Gson gson = new Gson();
+                        WeatherData weatherData = gson.fromJson(jsonString, WeatherData.class);
+
+                        /* Success. Call our listener. */
+                        if (weatherFetcherListener != null)
+                            weatherFetcherListener.onWeatherFetchSucceeded(weatherData);
+                    }
+                    catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+
+                        /* Something went wrong. Call our listener. */
+                        if (weatherFetcherListener != null)
+                            weatherFetcherListener.onWeatherFetchFailed(e);
+                    }
+
+                    break;
+
+                /* In this case, it's an icon file for the weather data object. */
+                case METHOD_KEY_GET_ICON:
+
+                    /* Get our WeatherItem and listener from the userInfo object. */
+                    WeatherData.WeatherItem weatherItem = (WeatherData.WeatherItem)((HashMap)userInfo).get(USER_INFO_WEATHER_ITEM_KEY);
+                    IconFetcherListener iconFetcherListener = (IconFetcherListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
+
+                    weatherItem.setIconImage(BitmapFactory.decodeByteArray(data, 0, data.length));
+
+                    /* Success. Call our listener. */
+                    if (iconFetcherListener != null)
+                        iconFetcherListener.onIconFetchSucceeded(weatherItem);
+
+                    break;
+
+                default: break;
+            }
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
+        public void onRequestDidFail(Object userInfo, Throwable error) {
+            String methodKey = (String)((HashMap)userInfo).get(USER_INFO_METHOD_KEY_KEY);
 
-        @Override
-        protected Throwable doInBackground(String... params) {
+            switch (methodKey) {
 
-            String urlStr = params[0];
+                /* In this case, call the listener's onWeatherFetchFailed method. */
+                case METHOD_KEY_GET_WEATHER:
 
-            Log.d(TAG, "Fetching weather data: " + urlStr);
+                    /* Get our listener from the userInfo object, and call it. */
+                    WeatherFetcherListener weatherFetcherListener = (WeatherFetcherListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
 
-            try {
-                URL url = new URL(urlStr);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    if (weatherFetcherListener != null)
+                        weatherFetcherListener.onWeatherFetchFailed(error);
 
-                httpURLConnection.setReadTimeout(10000);
-                httpURLConnection.setConnectTimeout(15000);
-                httpURLConnection.setRequestMethod("GET");
-                httpURLConnection.setDoInput(true);
+                    break;
 
-                httpURLConnection.connect();
+                /* In this case, call the listener's onIconFetchFailed method. */
+                case METHOD_KEY_GET_ICON:
 
-                int response = httpURLConnection.getResponseCode();
+                    /* Get our listener from the userInfo object, and call it. */
+                    IconFetcherListener iconFetcherListener = (IconFetcherListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
 
-                Log.d(TAG, "The response is: " + response);
+                    if (iconFetcherListener != null)
+                        iconFetcherListener.onIconFetchFailed(error);
 
-                inputStream = httpURLConnection.getInputStream();
+                    break;
 
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
-                byte[] buffer = new byte[1024];
-
-                int bytesRead;
-
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    byteArrayOutputStream.write(buffer, 0, bytesRead);
-
-                    publishProgress(byteArrayOutputStream.toString("UTF-8"));
-                    byteArrayOutputStream.reset();
-                }
-            } catch (Exception e) {
-                return e;
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(String... params) {
-            Log.d(TAG, Util.getMethodName());
-
-            super.onProgressUpdate(params);
-
-            String newData = params[0];
-
-            jsonString += newData;
-        }
-
-        protected void onPostExecute(Throwable result) {
-            Log.d(TAG, Util.getMethodName());
-
-            if (result != null) {
-                if (mListener != null) mListener.onWeatherDataFailed(result);
-            } else if (jsonString != null) {
-                Log.d(TAG, "Weather data: " + jsonString);
-
-                Gson gson = new Gson();
-                CurrentWeatherData weatherData = gson.fromJson(jsonString, CurrentWeatherData.class);
-
-                if (mListener != null) mListener.onWeatherDataReceived(weatherData);
-            }
-
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                }
-                catch (IOException e) {
-                    if (mListener != null) mListener.onWeatherDataFailed(e);
-                }
+                default: break;
             }
         }
-    }
+    };
 }
