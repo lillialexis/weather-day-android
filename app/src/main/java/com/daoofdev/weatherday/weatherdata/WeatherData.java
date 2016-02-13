@@ -24,6 +24,13 @@ public class WeatherData
 {
     private final static String TAG = "WeatherDay:CurrentWeatherData";
 
+    public enum TemperatureUnits
+    {
+        KELVIN,
+        CELSIUS,
+        FAHRENHEIT
+    }
+
     @SerializedName("coord")
     private Coordinate mCoordinate = null;
 
@@ -160,16 +167,42 @@ public class WeatherData
             return mSeaLevel;
         }
 
-        public Double getTemp() {
+        public Double getTempRaw() {
             return mTemp;
         }
 
-        public Double getTempMax() {
+        public Double getTempMaxRaw() {
             return mTempMax;
         }
 
-        public Double getTempMin() {
+        public Double getTempMinRaw() {
             return mTempMin;
+        }
+
+        /* No need to make an API call w the units. I can easily convert in-place. */
+        private Double convertedTemp(Double rawKelvin, TemperatureUnits units) {
+            switch (units) {
+                case KELVIN:
+                    return rawKelvin;
+                case CELSIUS:
+                    return rawKelvin - 273.0;
+                case FAHRENHEIT:
+                    return (((rawKelvin - 273.0) * 9) / 5) + 32;
+            }
+
+            return rawKelvin;
+        }
+
+        public Double getTemp(TemperatureUnits units) {
+            return convertedTemp(mTemp, units);
+        }
+
+        public Double getTempMax(TemperatureUnits units) {
+            return convertedTemp(mTempMax, units);
+        }
+
+        public Double getTempMin(TemperatureUnits units) {
+            return convertedTemp(mTempMin, units);
         }
     }
 
