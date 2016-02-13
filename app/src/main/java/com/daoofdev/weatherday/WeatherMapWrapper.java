@@ -19,15 +19,11 @@ import android.content.Context;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.util.Log;
 import com.google.gson.Gson;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
 @SuppressLint("LongLogTag")
 public class WeatherMapWrapper
@@ -44,6 +40,11 @@ public class WeatherMapWrapper
     private static final String LON_QUERY = "&lon=";
     private static final String API_QUERY = "&appid=";
 
+    private static final String METHOD_KEY_GET_WEATHER = "METHOD_KEY_GET_WEATHER";
+    private static final String METHOD_KEY_GET_ICON    = "METHOD_KEY_GET_ICON";
+
+    private static final String USER_INFO_METHOD_KEY_KEY = "USER_INFO_METHOD_KEY_KEY";
+    private static final String USER_INFO_LISTENER_KEY   = "USER_INFO_LISTENER_KEY";
 
     public interface WeatherMapWrapperListener
     {
@@ -64,101 +65,80 @@ public class WeatherMapWrapper
     public static void getWeatherDataForLocation(Location location, WeatherMapWrapperListener listener) {
         Log.d(TAG, Util.getMethodName());
 
+        /* Create the url for this request */
         String url = BASE_URL + METHOD_QUERY + LAT_QUERY + location.getLatitude() + LON_QUERY + location.getLatitude() + API_QUERY + WEATHER_MAP_API_KEY;
-        new WeatherFetcher(listener).execute(url);
+
+        /* Create a HashMap to store my method key and the delegate */
+        HashMap<String, Object> userInfo = new HashMap<>();
+        userInfo.put(USER_INFO_METHOD_KEY_KEY, METHOD_KEY_GET_WEATHER);
+        userInfo.put(USER_INFO_LISTENER_KEY, listener);
+
+        /* Create a new DataFetcher Object, passing in a HashMap containing the specific method and specific delegate, then invoke the URL */
+        new DataFetcher(userInfo, dataFetcherListener).execute(url);
     }
 
-    private static class WeatherFetcher extends AsyncTask<String, String, Throwable>
+    private static DataFetcher.DataFetcherListener dataFetcherListener = new DataFetcher.DataFetcherListener()
     {
-        WeatherMapWrapperListener mListener;
-        InputStream inputStream = null;
+        @Override
+        public void onDidFetchData(Object userInfo, byte[] data) {
+            String methodKey = (String)((HashMap)userInfo).get(USER_INFO_METHOD_KEY_KEY);
 
-        String jsonString = "";
+            switch (methodKey) {
 
-        WeatherFetcher(WeatherMapWrapperListener listener) {
-            mListener = listener;
+                /* In this case, it's a json string representing the current weather data */
+                case METHOD_KEY_GET_WEATHER:
+                    /* Get our listener from the userInfo object */
+                    WeatherMapWrapperListener listener = (WeatherMapWrapperListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
+
+                    try {
+                        String jsonString = new String(data, "UTF-8");
+
+                        Log.d(TAG, "Weather data: " + jsonString);
+
+                        Gson gson = new Gson();
+                        CurrentWeatherData weatherData = gson.fromJson(jsonString, CurrentWeatherData.class);
+
+                        if (listener != null)
+                            listener.onWeatherDataReceived(weatherData);
+
+                    }
+                    catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+
+                        /* Something went wrong. Call our listener. */
+                        if (listener != null)
+                            listener.onWeatherDataFailed(e);
+                    }
+
+                    break;
+
+                /* In this case, it's an icon file for the weather data object. */
+                case METHOD_KEY_GET_ICON:
+                    break;
+                default: break;
+            }
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
+        public void onRequestDidFail(Object userInfo, Throwable error) {
+            String methodKey = (String)((HashMap)userInfo).get(USER_INFO_METHOD_KEY_KEY);
 
-        @Override
-        protected Throwable doInBackground(String... params) {
+            switch (methodKey) {
 
-            String urlStr = params[0];
+                /* In this case, call the listener's onWeatherDataFailed method. */
+                case METHOD_KEY_GET_WEATHER:
+                    WeatherMapWrapperListener listener = (WeatherMapWrapperListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
 
-            Log.d(TAG, "Fetching weather data: " + urlStr);
+                    if (listener != null)
+                        listener.onWeatherDataFailed(error);
 
-            try {
-                URL url = new URL(urlStr);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    break;
 
-                httpURLConnection.setReadTimeout(10000);
-                httpURLConnection.setConnectTimeout(15000);
-                httpURLConnection.setRequestMethod("GET");
-                httpURLConnection.setDoInput(true);
+                case METHOD_KEY_GET_ICON:
+                    break;
 
-                httpURLConnection.connect();
-
-                int response = httpURLConnection.getResponseCode();
-
-                Log.d(TAG, "The response is: " + response);
-
-                inputStream = httpURLConnection.getInputStream();
-
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
-                byte[] buffer = new byte[1024];
-
-                int bytesRead;
-
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    byteArrayOutputStream.write(buffer, 0, bytesRead);
-
-                    publishProgress(byteArrayOutputStream.toString("UTF-8"));
-                    byteArrayOutputStream.reset();
-                }
-            } catch (Exception e) {
-                return e;
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(String... params) {
-            Log.d(TAG, Util.getMethodName());
-
-            super.onProgressUpdate(params);
-
-            String newData = params[0];
-
-            jsonString += newData;
-        }
-
-        protected void onPostExecute(Throwable result) {
-            Log.d(TAG, Util.getMethodName());
-
-            if (result != null) {
-                if (mListener != null) mListener.onWeatherDataFailed(result);
-            } else if (jsonString != null) {
-                Log.d(TAG, "Weather data: " + jsonString);
-
-                Gson gson = new Gson();
-                CurrentWeatherData weatherData = gson.fromJson(jsonString, CurrentWeatherData.class);
-
-                if (mListener != null) mListener.onWeatherDataReceived(weatherData);
-            }
-
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                }
-                catch (IOException e) {
-                    if (mListener != null) mListener.onWeatherDataFailed(e);
-                }
+                default: break;
             }
         }
-    }
+    };
 }
