@@ -59,7 +59,7 @@ public class WeatherMapWrapper
 
     public interface IconFetcherListener
     {
-        void onIconFetchSucceeded(WeatherData.WeatherItem data);
+        void onIconFetchSucceeded(WeatherData.WeatherItem item);
 
         void onIconFetchFailed(Throwable error);
     }
