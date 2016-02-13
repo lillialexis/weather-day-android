@@ -38,19 +38,9 @@
         android:layout_height="match_parent">
 
         <TextView
-                android:id="@+id/title_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Weather Day"
-            />
-
-
-        <TextView
                 android:id="@+id/currently_in_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Currently in "
-                android:layout_below="@+id/title_label"
             />
 
         <TextView
@@ -59,6 +49,14 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/currently_in_label"
             />
+
+        <ImageView
+            android:id="@+id/current_weather_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/current_temp_label"
+            android:layout_alignBottom="@+id/current_temp_label"
+        />
 
         <TextView
             android:id="@+id/current_main_description_label"
@@ -122,8 +120,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/forecast_today_label"
-            android:text="Today:"
             />
+
+
+        <ImageView
+            android:id="@+id/forecast_weather_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/forecast_temp_label"
+            android:layout_alignBottom="@+id/forecast_temp_label"
+        />
 
         <TextView
             android:id="@+id/forecast_high_temp_label"
@@ -210,14 +216,14 @@
             android:layout_below="@+id/sunrise_label"
             />
 
+        <TextView
+                android:id="@+id/refreshing_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Refreshing..."
+            />
 
-
-        <ImageView
-            android:id="@+id/weather_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/currently_in_label"
-        />
     </RelativeLayout>
 
         </ScrollView>
