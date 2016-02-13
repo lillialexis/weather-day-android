@@ -6,17 +6,17 @@
     android:id="@+id/swipe_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.daoofdev.weatherday.MainActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <!--<FrameLayout-->
+        <!--<FrameLayout-->
         <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
         <!--xmlns:tools="http://schemas.android.com/tools"-->
         <!--android:layout_width="match_parent"-->
@@ -27,205 +27,226 @@
         <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
         <!--tools:context="com.daoofdev.weatherday.MainActivity">-->
 
-    <!--<ImageView-->
-            <!--android:id="@+id/background_image"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
+        <!--<ImageView-->
+        <!--android:id="@+id/background_image"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
         <!--/>-->
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-                android:id="@+id/currently_in_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-            />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/current_temp_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/currently_in_label"
-            />
+                <RelativeLayout
+                    android:id="@+id/current_weather_relative_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/current_weather_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/current_temp_label"
-            android:layout_alignBottom="@+id/current_temp_label"
-        />
+                    <TextView
+                        android:id="@+id/currently_in_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
 
-        <TextView
-            android:id="@+id/current_main_description_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/current_temp_label"
-            />
+                    <TextView
+                        android:id="@+id/current_temp_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/currently_in_label"
+                        />
 
-        <TextView
-            android:id="@+id/current_detailed_description_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/current_main_description_label"
-            />
+                    <ImageView
+                        android:id="@+id/current_weather_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/current_temp_label"
+                        android:layout_toRightOf="@+id/current_temp_label"
+                        />
 
-        <TextView
-            android:id="@+id/current_wind_speed_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/current_detailed_description_label"
-            />
+                    <TextView
+                        android:id="@+id/current_main_description_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/current_temp_label"
+                        />
 
-        <TextView
-            android:id="@+id/current_wind_direction_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/current_wind_speed_label"
-            android:layout_alignBottom="@+id/current_wind_speed_label"
-            />
+                    <TextView
+                        android:id="@+id/current_detailed_description_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/current_main_description_label"
+                        />
 
-        <TextView
-            android:id="@+id/current_clouds_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/current_wind_speed_label"
-            />
+                    <TextView
+                        android:id="@+id/current_wind_speed_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/current_detailed_description_label"
+                        />
 
-        <TextView
-            android:id="@+id/current_humidity_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/current_clouds_label"
-            />
+                    <TextView
+                        android:id="@+id/current_wind_direction_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/current_wind_speed_label"
+                        android:layout_toRightOf="@+id/current_wind_speed_label"
+                        />
 
-        <TextView
-            android:id="@+id/current_pressure_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/current_humidity_label"
-            />
+                    <TextView
+                        android:id="@+id/current_clouds_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/current_wind_speed_label"
+                        />
 
-        <TextView
-            android:id="@+id/forecast_today_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/current_pressure_label"
-            />
+                    <TextView
+                        android:id="@+id/current_humidity_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/current_clouds_label"
+                        />
 
-        <TextView
-            android:id="@+id/forecast_temp_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/forecast_today_label"
-            />
+                    <TextView
+                        android:id="@+id/current_pressure_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/current_humidity_label"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/forecast_weather_relative_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/forecast_today_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+
+                    <TextView
+                        android:id="@+id/forecast_temp_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/forecast_today_label"
+                        />
 
 
-        <ImageView
-            android:id="@+id/forecast_weather_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/forecast_temp_label"
-            android:layout_alignBottom="@+id/forecast_temp_label"
-        />
+                    <ImageView
+                        android:id="@+id/forecast_weather_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/forecast_temp_label"
+                        android:layout_toRightOf="@+id/forecast_temp_label"
+                        />
 
-        <TextView
-            android:id="@+id/forecast_high_temp_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/forecast_temp_label"
-            />
+                    <TextView
+                        android:id="@+id/forecast_high_temp_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/forecast_temp_label"
+                        />
 
-        <TextView
-            android:id="@+id/forecast_low_temp_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/forecast_high_temp_label"
-            />
+                    <TextView
+                        android:id="@+id/forecast_low_temp_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/forecast_high_temp_label"
+                        />
 
-        <TextView
-            android:id="@+id/forecast_main_description_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/forecast_low_temp_label"
-            />
+                    <TextView
+                        android:id="@+id/forecast_main_description_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/forecast_low_temp_label"
+                        />
 
-        <TextView
-            android:id="@+id/forecast_detailed_description_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/forecast_main_description_label"
-            />
+                    <TextView
+                        android:id="@+id/forecast_detailed_description_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/forecast_main_description_label"
+                        />
 
-        <TextView
-            android:id="@+id/forecast_rain_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/forecast_detailed_description_label"
-            />
+                    <TextView
+                        android:id="@+id/forecast_rain_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/forecast_detailed_description_label"
+                        />
 
-        <TextView
-            android:id="@+id/forecast_wind_speed_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/forecast_rain_label"
-            />
+                    <TextView
+                        android:id="@+id/forecast_wind_speed_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/forecast_rain_label"
+                        />
 
-        <TextView
-            android:id="@+id/forecast_wind_direction_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/forecast_wind_speed_label"
-            android:layout_alignBottom="@+id/forecast_wind_speed_label"
-            />
+                    <TextView
+                        android:id="@+id/forecast_wind_direction_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/forecast_wind_speed_label"
+                        android:layout_toRightOf="@+id/forecast_wind_speed_label"
+                        />
 
-        <TextView
-            android:id="@+id/forecast_clouds_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/forecast_wind_speed_label"
-            />
+                    <TextView
+                        android:id="@+id/forecast_clouds_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/forecast_wind_speed_label"
+                        />
 
-        <TextView
-            android:id="@+id/forecast_humidity_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/forecast_clouds_label"
-            />
+                    <TextView
+                        android:id="@+id/forecast_humidity_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/forecast_clouds_label"
+                        />
 
-        <TextView
-            android:id="@+id/forecast_pressure_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/forecast_humidity_label"
-            />
+                    <TextView
+                        android:id="@+id/forecast_pressure_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/forecast_humidity_label"
+                        />
 
-        <TextView
-            android:id="@+id/sunrise_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/forecast_pressure_label"
-            />
+                    <TextView
+                        android:id="@+id/sunrise_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/forecast_pressure_label"
+                        />
 
-        <TextView
-            android:id="@+id/sunset_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/sunrise_label"
-            />
+                    <TextView
+                        android:id="@+id/sunset_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/sunrise_label"
+                        />
 
-        <TextView
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <TextView
                 android:id="@+id/refreshing_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="Refreshing..."
-            />
+                />
 
-    </RelativeLayout>
+        </FrameLayout>
 
-        </ScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
-<!--</FrameLayout>-->
+    </ScrollView>
+
+</android.support.v4.widget.SwipeRefreshLayout>
+

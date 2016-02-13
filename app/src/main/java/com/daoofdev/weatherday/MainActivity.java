@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    private View mCurrentWeatherLayout;
+    private View mForecastWeatherLayout;
+
     private TextView  mCurrentlyInLabel;
     private TextView  mCurrentTempLabel;
     private TextView  mCurrentMainDescriptionLabel;
@@ -90,7 +93,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mSwipeRefreshLayout               = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout    = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
+
+        mCurrentWeatherLayout  = findViewById(R.id.current_weather_relative_layout);
+        mForecastWeatherLayout = findViewById(R.id.forecast_weather_relative_layout);
 
         mCurrentlyInLabel                 = (TextView)findViewById(R.id.currently_in_label);
         mCurrentTempLabel                 = (TextView)findViewById(R.id.current_temp_label);
@@ -122,6 +128,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mRefreshingLabel                  = (TextView)findViewById(R.id.refreshing_label);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
+
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
     private WeatherMapWrapper.CurrentWeatherFetcherListener currentWeatherFetcherListener = new WeatherMapWrapper.CurrentWeatherFetcherListener() {
@@ -219,14 +230,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     private void updateUserInterface() {
-        if (mCurrentWeatherDataCallbackReceived && mForecastWeatherDataCallbackReceived) {
-            mSwipeRefreshLayout.setRefreshing(false);
-
-            mRefreshingLabel.setVisibility(View.GONE);
-        } else {
-            mRefreshingLabel.setVisibility(View.VISIBLE);
-        }
-
         MainData mainData;
         System system;
         Wind wind;
@@ -300,6 +303,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
             }
         }
+
+        if (mCurrentWeatherDataCallbackReceived && mForecastWeatherDataCallbackReceived) {
+            mSwipeRefreshLayout.setRefreshing(false);
+
+            mRefreshingLabel.setVisibility(View.GONE);
+
+            mCurrentWeatherLayout.setVisibility(View.VISIBLE);
+            mForecastWeatherLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void downloadIcon(WeatherItem item) {
@@ -335,7 +347,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mCurrentWeatherData = null;
         mForecastWeatherData = null;
 
-        updateUserInterface();
+        mRefreshingLabel.setVisibility(View.VISIBLE);
+
+        mCurrentWeatherLayout.setVisibility(View.GONE);
+        mForecastWeatherLayout.setVisibility(View.GONE);
 
         if (ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                             PackageManager.PERMISSION_GRANTED &&
