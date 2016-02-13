@@ -15,6 +15,7 @@ package com.daoofdev.weatherday.WeatherData;
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.internal.ConstructorConstructor;
 
 public class System {
     private final static String TAG = "WeatherDay:System";
@@ -47,5 +48,13 @@ public class System {
 
     public Long getSunset() {
         return mSunset;
+    }
+
+    public String getPrettySunrise() {
+        return Constants.prettyTime(mSunrise);
+    }
+
+    public String getPrettySunset() {
+        return Constants.prettyTime(mSunset);
     }
 }

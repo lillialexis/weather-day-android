@@ -35,7 +35,7 @@ public class ForecastItem {
     private Double mSpeed = 0.0;
 
     @SerializedName("deg")
-    private Integer mDeg = 0;
+    private Double mDeg = 0.0;
 
     @SerializedName("clouds")
     private Integer mClouds = 0;
@@ -56,7 +56,7 @@ public class ForecastItem {
         return mClouds;
     }
 
-    public Integer getDeg() {
+    public Double getDeg() {
         return mDeg;
     }
 
@@ -76,11 +76,27 @@ public class ForecastItem {
         return mPressure;
     }
 
-    public Double getRain() {
+    public Double getRainRaw() {
         return mRain;
     }
 
-    public Double getSpeed() {
+    public Double getRain(Constants.DepthUnits units) {
+        return Constants.convertDepth(mRain, units);
+    }
+
+    public Double getSpeedRaw() {
         return mSpeed;
+    }
+
+    public Double getSpeed(Constants.SpeedUnits units) {
+        return Constants.convertedSpeed(mSpeed, units);
+    }
+
+    public String getPrettyDirection() {
+        return Constants.prettyDirection(mDeg);
+    }
+
+    public Temperature getTemperature() {
+        return mTemperature;
     }
 }

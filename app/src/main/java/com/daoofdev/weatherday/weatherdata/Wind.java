@@ -31,7 +31,16 @@ public class Wind {
         return mDeg;
     }
 
-    public Double getSpeed() {
+    public Double getSpeedRaw() {
         return mSpeed;
     }
+
+    public Double getSpeed(Constants.SpeedUnits units) {
+        return Constants.convertedSpeed(mSpeed, units);
+    }
+
+    public String getPrettyDirection() {
+        return Constants.prettyDirection(mDeg);
+    }
+
 }
