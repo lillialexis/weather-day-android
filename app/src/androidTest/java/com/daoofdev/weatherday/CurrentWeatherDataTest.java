@@ -7,7 +7,7 @@ package com.daoofdev.weatherday;
  * Mozilla Public License, version 2.0. The full text of the
  * Mozilla Public License is at https://www.mozilla.org/MPL/2.0/
  *
- * File:    WeatherDataTest.java
+ * File:    CurrentWeatherDataTest.java
  * Project: WeatherDay
  *
  * Created by Lilli Szafranski on 2/11/16.

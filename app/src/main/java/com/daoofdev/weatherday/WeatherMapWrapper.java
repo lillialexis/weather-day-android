@@ -16,7 +16,6 @@ package com.daoofdev.weatherday;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -55,9 +54,9 @@ public class WeatherMapWrapper
 
     public interface WeatherFetcherListener
     {
-        void onWeatherFetchSucceeded(CurrentWeatherData data);
+        void onCurrentWeatherFetchSucceeded(CurrentWeatherData data);
 
-        void onWeatherFetchFailed(Throwable error);
+        void onCurrentWeatherFetchFailed(Throwable error);
     }
 
     public interface IconFetcherListener
@@ -156,14 +155,14 @@ public class WeatherMapWrapper
 
                         /* Success. Call our listener. */
                         if (weatherFetcherListener != null)
-                            weatherFetcherListener.onWeatherFetchSucceeded(weatherData);
+                            weatherFetcherListener.onCurrentWeatherFetchSucceeded(weatherData);
                     }
                     catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
 
                         /* Something went wrong. Call our listener. */
                         if (weatherFetcherListener != null)
-                            weatherFetcherListener.onWeatherFetchFailed(e);
+                            weatherFetcherListener.onCurrentWeatherFetchFailed(e);
                     }
 
                     break;
@@ -193,14 +192,14 @@ public class WeatherMapWrapper
 
             switch (methodKey) {
 
-                /* In this case, call the listener's onWeatherFetchFailed method. */
+                /* In this case, call the listener's onCurrentWeatherFetchFailed method. */
                 case METHOD_KEY_GET_WEATHER:
 
                     /* Get our listener from the userInfo object, and call it. */
                     WeatherFetcherListener weatherFetcherListener = (WeatherFetcherListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
 
                     if (weatherFetcherListener != null)
-                        weatherFetcherListener.onWeatherFetchFailed(error);
+                        weatherFetcherListener.onCurrentWeatherFetchFailed(error);
 
                     break;
 

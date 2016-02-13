@@ -1,4 +1,5 @@
 package com.daoofdev.weatherday.WeatherData;
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (c) 2016 Dao of Development, LLC.
@@ -7,7 +8,7 @@ package com.daoofdev.weatherday.WeatherData;
  * Mozilla Public License, version 2.0. The full text of the
  * Mozilla Public License is at https://www.mozilla.org/MPL/2.0/
  *
- * File:    System.java
+ * File:    City.java
  * Project: WeatherDay
  *
  * Created by Lilli Szafranski on 2/12/16.
@@ -16,36 +17,44 @@ package com.daoofdev.weatherday.WeatherData;
 
 import com.google.gson.annotations.SerializedName;
 
-public class System {
-    private final static String TAG = "WeatherDay:System";
-    @SerializedName("message")
-    private Double mMessage = 0.0;
+public class City {
+    private final static String TAG = "WeatherDay:City";
+
+    @SerializedName("id")
+    private Integer mId = 0;
+
+    @SerializedName("name")
+    private String mName = null;
+
+    @SerializedName("coord")
+    private Coordinate mCoordinate = null;
 
     @SerializedName("country")
     private String mCountry = null;
 
-    @SerializedName("sunrise")
-    private Long mSunrise   = 0L;
+    @SerializedName("population")
+    private Integer mPopulation = 0;
 
-    @SerializedName("sunset")
-    private Long mSunset    = 0L;
+    public City() {
+    }
 
-    public System() {
+    public Coordinate getCoordinate() {
+        return mCoordinate;
     }
 
     public String getCountry() {
         return mCountry;
     }
 
-    public Double getMessage() {
-        return mMessage;
+    public Integer getId() {
+        return mId;
     }
 
-    public Long getSunrise() {
-        return mSunrise;
+    public String getName() {
+        return mName;
     }
 
-    public Long getSunset() {
-        return mSunset;
+    public Integer getPopulation() {
+        return mPopulation;
     }
 }

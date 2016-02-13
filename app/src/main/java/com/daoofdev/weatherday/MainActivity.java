@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
             WeatherMapWrapper.fetchCurrentWeatherForLocation(location, new WeatherMapWrapper.WeatherFetcherListener()
             {
                 @Override
-                public void onWeatherFetchSucceeded(CurrentWeatherData data) {
+                public void onCurrentWeatherFetchSucceeded(CurrentWeatherData data) {
                     Log.d(TAG, Util.getMethodName());
 
                     Toast.makeText(MainActivity.this, "Updating...", Toast.LENGTH_SHORT).show();
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 @Override
-                public void onWeatherFetchFailed(Throwable error) {
+                public void onCurrentWeatherFetchFailed(Throwable error) {
                     Log.d(TAG, Util.getMethodName());
 
                     Toast.makeText(MainActivity.this, "Error getting the current weather.", Toast.LENGTH_SHORT).show();
