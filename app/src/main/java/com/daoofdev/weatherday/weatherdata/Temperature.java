@@ -40,27 +40,52 @@ public class Temperature {
     public Temperature() {
     }
 
-    public Double getDay() {
+    public Double getDayRaw() {
         return mDay;
     }
 
-    public Double getEve() {
+    public Double getEveRaw() {
         return mEve;
     }
 
-    public Double getMax() {
+    public Double getMaxRaw() {
         return mMax;
     }
 
-    public Double getMin() {
+    public Double getMinRaw() {
         return mMin;
     }
 
-    public Double getMorn() {
+    public Double getMornRaw() {
         return mMorn;
     }
 
-    public Double getNight() {
+    public Double getNightRaw() {
         return mNight;
     }
+
+    public Double getDay(Constants.TemperatureUnits units) {
+        return Constants.convertedTemp(mDay, units);
+    }
+
+    public Double getEve(Constants.TemperatureUnits units) {
+        return Constants.convertedTemp(mEve, units);
+    }
+
+    public Double getMax(Constants.TemperatureUnits units) {
+        return Constants.convertedTemp(mMax, units);
+    }
+
+    public Double getMin(Constants.TemperatureUnits units) {
+        return Constants.convertedTemp(mMin, units);
+    }
+
+    public Double getMorn(Constants.TemperatureUnits units) {
+        return Constants.convertedTemp(mMorn, units);
+    }
+
+    public Double getNight(Constants.TemperatureUnits units) {
+        return Constants.convertedTemp(mNight, units);
+    }
+
 }

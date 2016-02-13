@@ -98,7 +98,7 @@ public class ForecastWeatherDataTest extends AndroidTestCase
 //        assertEquals(data.getMainData().getGroundLevel(), 1024.65);
 //
 //
-//        assertEquals(data.getWind().getSpeed(), 0.96);
+//        assertEquals(data.getWind().getSpeedRaw(), 0.96);
 //        assertEquals(data.getWind().getDeg(), 285.001);
 //
 //        assertEquals(data.getClouds().getAll(), Integer.valueOf(0));

@@ -71,29 +71,15 @@ public class MainData {
         return mTempMin;
     }
 
-    /* No need to make an API call w the units. I can easily convert in-place. */
-    private Double convertedTemp(Double rawKelvin, Constants.TemperatureUnits units) {
-        switch (units) {
-            case KELVIN:
-                return rawKelvin;
-            case CELSIUS:
-                return rawKelvin - 273.0;
-            case FAHRENHEIT:
-                return (((rawKelvin - 273.0) * 9) / 5) + 32;
-        }
-
-        return rawKelvin;
-    }
-
     public Double getTemp(Constants.TemperatureUnits units) {
-        return convertedTemp(mTemp, units);
+        return Constants.convertedTemp(mTemp, units);
     }
 
     public Double getTempMax(Constants.TemperatureUnits units) {
-        return convertedTemp(mTempMax, units);
+        return Constants.convertedTemp(mTempMax, units);
     }
 
     public Double getTempMin(Constants.TemperatureUnits units) {
-        return convertedTemp(mTempMin, units);
+        return Constants.convertedTemp(mTempMin, units);
     }
 }

@@ -58,17 +58,24 @@
             />
 
         <TextView
-            android:id="@+id/current_wind_label"
+            android:id="@+id/current_wind_speed_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/current_detailed_description_label"
             />
 
         <TextView
+            android:id="@+id/current_wind_direction_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/current_wind_speed_label"
+            />
+
+        <TextView
             android:id="@+id/current_clouds_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/current_wind_label"
+            android:layout_below="@+id/current_wind_speed_label"
             />
 
         <TextView
@@ -86,10 +93,17 @@
             />
 
         <TextView
-            android:id="@+id/forecast_high_temp_label"
+            android:id="@+id/forecast_temp_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/current_pressure_label"
+            />
+
+        <TextView
+            android:id="@+id/forecast_high_temp_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/forecast_temp_label"
             />
 
         <TextView
@@ -114,17 +128,31 @@
             />
 
         <TextView
-            android:id="@+id/forecast_wind_label"
+            android:id="@+id/forecast_rain_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/forecast_detailed_description_label"
             />
 
         <TextView
+            android:id="@+id/forecast_wind_speed_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/forecast_rain_label"
+            />
+
+        <TextView
+            android:id="@+id/forecast_wind_direction_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/forecast_wind_speed_label"
+            />
+
+        <TextView
             android:id="@+id/forecast_clouds_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/forecast_wind_label"
+            android:layout_below="@+id/forecast_wind_speed_label"
             />
 
         <TextView
