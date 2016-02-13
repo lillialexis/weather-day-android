@@ -18,9 +18,6 @@ import android.test.AndroidTestCase;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
-
-import java.util.ArrayList;
 
 public class WeatherDataTest extends AndroidTestCase
 {

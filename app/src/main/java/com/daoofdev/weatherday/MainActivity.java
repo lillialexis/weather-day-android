@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
                     WeatherData.WeatherItem item = data.getWeatherItems().get(0);
 
                     if (item != null)
-                        WeatherMapWrapper.getIconForWeatherData(item, new WeatherMapWrapper.IconFetcherListener()
+                        WeatherMapWrapper.fetchIconForWeatherData(item, new WeatherMapWrapper.IconFetcherListener()
                         {
                             @Override
                             public void onIconFetchSucceeded(WeatherData.WeatherItem item) {
