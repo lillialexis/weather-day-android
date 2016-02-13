@@ -51,10 +51,10 @@ public class System {
     }
 
     public String getPrettySunrise() {
-        return Constants.prettyTime(mSunrise);
+        return Formatter.prettyTime(mSunrise);
     }
 
     public String getPrettySunset() {
-        return Constants.prettyTime(mSunset);
+        return Formatter.prettyTime(mSunset);
     }
 }

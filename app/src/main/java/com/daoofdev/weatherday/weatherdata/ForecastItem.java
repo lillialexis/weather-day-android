@@ -18,7 +18,7 @@ package com.daoofdev.weatherday.WeatherData;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.util.*;
 
 public class ForecastItem {
     private final static String TAG = "WeatherDay:ForecastItem";
@@ -102,7 +102,7 @@ public class ForecastItem {
     }
 
     public String getPrettyDirection() {
-        return Constants.prettyDirection(mDeg);
+        return Formatter.prettyDirection(mDeg);
     }
 
     public Temperature getTemperature() {

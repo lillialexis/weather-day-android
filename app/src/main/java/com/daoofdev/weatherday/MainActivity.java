@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
             if ((wind = mCurrentWeatherData.getWind()) != null) {
                 setTextForTextViewAndShow("Wind: %s %s", wind.getPrettySpeed(mSpeedUnits), mSpeedUnits.toString(), mCurrentWindSpeedLabel);
-                setTextForTextViewAndShow("%s%s", wind.getPrettyDirection(), "", mCurrentWindDirectionLabel);
+                setTextForTextViewAndShow(" %s%s", wind.getPrettyDirection(), "", mCurrentWindDirectionLabel);
             }
 
             if ((clouds = mCurrentWeatherData.getClouds()) != null) {
@@ -295,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 }
 
                 setTextForTextViewAndShow("Wind: %s %s", forecastItem.getPrettySpeed(mSpeedUnits), mSpeedUnits.toString(), mForecastWindSpeedLabel);
-                setTextForTextViewAndShow("%s%s", forecastItem.getPrettyDirection(), "", mForecastWindDirectionLabel);
+                setTextForTextViewAndShow(" %s%s", forecastItem.getPrettyDirection(), "", mForecastWindDirectionLabel);
                 setTextForTextViewAndShow("Clouds: %s%s", forecastItem.getClouds(), "%", mForecastCloudsLabel);
                 setTextForTextViewAndShow("Rain: %s %s", forecastItem.getPrettyRain(mDepthUnits), mDepthUnits.toString(), mForecastRainLabel);
 

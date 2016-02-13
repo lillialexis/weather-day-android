@@ -14,34 +14,8 @@ package com.daoofdev.weatherday.WeatherData;
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-
 public class Constants {
     private final static String TAG = "WeatherDay:Constants";
-
-//    public static String tus(TemperatureUnits units) {
-//        switch (units) {
-//            case KELVIN: return "K";
-//            case CELSIUS: return "C";
-//            case FAHRENHEIT: return "F";
-//        }
-//        return "";
-//    }
-//
-//    public static String sus(SpeedUnits units) {
-//        switch (units) {
-//            case METERS_PER_SEC: return "MPS";
-//            case MILES_PER_HOUR: return "MPH";
-//        }
-//        return "";
-//    }
-//
-//    public static String dus(DepthUnits units) {
-//        switch (units) {
-//            case CM: return "CM";
-//            case IN: return "IN";
-//        }
-//        return "";
-//    }
 
     public enum DepthUnits
     {
@@ -116,14 +90,5 @@ public class Constants {
         if (units == SpeedUnits.MILES_PER_HOUR) return rawMPS * 2.237;
 
         return rawMPS;
-    }
-
-    static String prettyTime(Long time) {
-
-        return "TODO";
-    }
-
-    static String prettyDirection(Double directionDegrees) {
-        return "TODO";
     }
 }
