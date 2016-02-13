@@ -22,15 +22,21 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
 {
     private final static String TAG = "WeatherDay:MainActivity";
 
+    private ImageView mIconImageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mIconImageView = (ImageView)findViewById(R.id.weatherIcon);
     }
 
     @Override
@@ -47,10 +53,17 @@ public class MainActivity extends AppCompatActivity
 
         Location location = LocationWrapper.getLastKnownLocation();
 
-        if (location != null)
-            Log.d(TAG, String.format("Lat: %f Lon: %f", location.getLatitude(), location.getLongitude()));
-        else
+        if (location == null) {
             Log.d(TAG, "Location is null");
+
+            Toast.makeText(this, "Can't get the current weather: Location unknown.", Toast.LENGTH_SHORT).show();
+
+
+        } else {
+            Log.d(TAG, String.format("Lat: %f Lon: %f", location.getLatitude(), location.getLongitude()));
+        }
+
+        Toast.makeText(this, "Getting the current weather...", Toast.LENGTH_SHORT).show();
 
         if (location != null && WeatherMapWrapper.canConnectToOpenWeather())
             WeatherMapWrapper.fetchCurrentWeatherForLocation(location, new WeatherMapWrapper.WeatherFetcherListener()
@@ -58,11 +71,35 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onWeatherFetchSucceeded(WeatherData data) {
                     Log.d(TAG, Util.getMethodName());
+
+                    Toast.makeText(MainActivity.this, "Updating...", Toast.LENGTH_SHORT).show();
+
+                    WeatherData.WeatherItem item = data.getWeatherItems().get(0);
+
+                    if (item != null)
+                        WeatherMapWrapper.getIconForWeatherData(item, new WeatherMapWrapper.IconFetcherListener()
+                        {
+                            @Override
+                            public void onIconFetchSucceeded(WeatherData.WeatherItem item) {
+                                Log.d(TAG, Util.getMethodName());
+
+                                mIconImageView.setImageBitmap(item.getIconImage());
+                            }
+
+                            @Override
+                            public void onIconFetchFailed(Throwable error) {
+                                Log.d(TAG, Util.getMethodName());
+
+                                Toast.makeText(MainActivity.this, "Error getting the current weather.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                 }
 
                 @Override
                 public void onWeatherFetchFailed(Throwable error) {
                     Log.d(TAG, Util.getMethodName());
+
+                    Toast.makeText(MainActivity.this, "Error getting the current weather.", Toast.LENGTH_SHORT).show();
                 }
             });
     }
