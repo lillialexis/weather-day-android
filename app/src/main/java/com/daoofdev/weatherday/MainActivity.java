@@ -20,6 +20,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,12 +40,14 @@ import com.daoofdev.weatherday.WeatherData.Temperature;
 import com.daoofdev.weatherday.WeatherData.WeatherItem;
 import com.daoofdev.weatherday.WeatherData.Wind;
 
-public class MainActivity extends AppCompatActivity
-{
+
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private final static String TAG = "WeatherDay:MainActivity";
 
     private CurrentWeatherData mCurrentWeatherData = null;
     private ForecastWeatherData mForecastWeatherData = null;
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private TextView  mCurrentlyInLabel;
     private TextView  mCurrentTempLabel;
@@ -72,11 +75,15 @@ public class MainActivity extends AppCompatActivity
     Constants.DepthUnits       mDepthUnits = Constants.DepthUnits.IN;
     Constants.TemperatureUnits mTempUnits  = Constants.TemperatureUnits.FAHRENHEIT;
     Constants.SpeedUnits       mSpeedUnits = Constants.SpeedUnits.MILES_PER_HOUR;
+    private boolean mForecastWeatherDataCallbackReceived;
+    private boolean mCurrentWeatherDataCallbackReceived;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mSwipeRefreshLayout               = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
 
         mCurrentlyInLabel                 = (TextView)findViewById(R.id.currently_in_label);
         mCurrentTempLabel                 = (TextView)findViewById(R.id.current_temp_label);
@@ -100,7 +107,10 @@ public class MainActivity extends AppCompatActivity
         mSunriseLabel                     = (TextView)findViewById(R.id.sunrise_label);
         mSunsetLabel                      = (TextView)findViewById(R.id.sunset_label);
 
-        mCurrentWeatherIcon = (ImageView)findViewById(R.id.weather_icon);
+        mCurrentWeatherIcon               = (ImageView)findViewById(R.id.weather_icon);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
     private WeatherMapWrapper.CurrentWeatherFetcherListener currentWeatherFetcherListener = new WeatherMapWrapper.CurrentWeatherFetcherListener() {
@@ -108,13 +118,14 @@ public class MainActivity extends AppCompatActivity
         public void onCurrentWeatherFetchSucceeded(CurrentWeatherData data) {
             Log.d(TAG, Util.getMethodName());
 
-            Toast.makeText(MainActivity.this, "Updating current weather...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this, "Updating current weather...", Toast.LENGTH_SHORT).show();
 
             mCurrentWeatherData = data;
 
             for (WeatherItem item : mCurrentWeatherData.getWeatherItems())
                 downloadIcon(item);
 
+            mCurrentWeatherDataCallbackReceived = true;
             refreshUI();
         }
 
@@ -125,6 +136,9 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(MainActivity.this, "Error getting the current weather.", Toast.LENGTH_SHORT).show();
 
             mCurrentWeatherData = null;
+
+            mCurrentWeatherDataCallbackReceived = true;
+            refreshUI();
         }
     };
 
@@ -133,7 +147,7 @@ public class MainActivity extends AppCompatActivity
         public void onForecastWeatherFetchSucceeded(ForecastWeatherData data) {
             Log.d(TAG, Util.getMethodName());
 
-            Toast.makeText(MainActivity.this, "Updating forecast weather...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this, "Updating forecast weather...", Toast.LENGTH_SHORT).show();
 
             mForecastWeatherData = data;
 
@@ -141,6 +155,7 @@ public class MainActivity extends AppCompatActivity
                 for (WeatherItem weatherItem : forecastItem.getWeatherItems())
                     downloadIcon(weatherItem);
 
+            mForecastWeatherDataCallbackReceived = true;
             refreshUI();
         }
 
@@ -151,6 +166,9 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(MainActivity.this, "Error getting the forecast weather.", Toast.LENGTH_SHORT).show();
 
             mForecastWeatherData = null;
+
+            mForecastWeatherDataCallbackReceived = true;
+            refreshUI();
         }
     };
 
@@ -190,6 +208,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void refreshUI() {
+        if (mCurrentWeatherDataCallbackReceived && mForecastWeatherDataCallbackReceived)
+            mSwipeRefreshLayout.setRefreshing(false);
 
         MainData mainData;
         System system;
@@ -270,6 +290,25 @@ public class MainActivity extends AppCompatActivity
 
         LocationWrapper.startGettingLocation();
 
+        /* Do initial refresh w animated spinner */
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override public void run() {
+                 mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
+
+        onRefresh();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        LocationWrapper.stopGettingLocation();
+    }
+
+    @Override
+    public void onRefresh() {
         if (ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                             PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
@@ -279,27 +318,38 @@ public class MainActivity extends AppCompatActivity
         }
 
         Location location = LocationWrapper.getLastKnownLocation();
-
         if (location == null) {
-            Log.d(TAG, "Location is null");
-
-            Toast.makeText(this, "Can't get the current weather: Location unknown.", Toast.LENGTH_SHORT).show();
-        } else {
-            Log.d(TAG, String.format("Lat: %f Lon: %f", location.getLatitude(), location.getLongitude()));
+            errorRefreshing("Can't get the current weather: Location unknown.");
+            return;
         }
 
-        Toast.makeText(this, "Getting the current weather...", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, String.format("Lat: %f Lon: %f", location.getLatitude(), location.getLongitude()));
 
-        if (location != null && WeatherMapWrapper.canConnectToOpenWeather()) {
-            WeatherMapWrapper.fetchCurrentWeatherForLocation(location, currentWeatherFetcherListener);
-            WeatherMapWrapper.fetchForecastWeatherForLocation(location, 1, forecastWeatherFetcherListener);
+        //Toast.makeText(this, "Getting the current weather...", Toast.LENGTH_SHORT).show();
+
+        mCurrentWeatherDataCallbackReceived = false;
+        mForecastWeatherDataCallbackReceived = false;
+
+        if (!WeatherMapWrapper.canConnectToOpenWeather()) {
+            errorRefreshing("Can't get the current weather: Can't connect to server.");
+            return;
         }
+
+        WeatherMapWrapper.fetchCurrentWeatherForLocation(location, currentWeatherFetcherListener);
+        WeatherMapWrapper.fetchForecastWeatherForLocation(location, 1, forecastWeatherFetcherListener);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+    private void errorRefreshing(String message) {
+        Log.e(TAG, message);
 
-        LocationWrapper.stopGettingLocation();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
+        mCurrentWeatherData = null;
+        mForecastWeatherData = null;
+
+        mCurrentWeatherDataCallbackReceived = false;
+        mForecastWeatherDataCallbackReceived = false;
+
+        refreshUI();
     }
 }
