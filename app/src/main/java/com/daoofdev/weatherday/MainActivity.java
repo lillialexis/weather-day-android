@@ -29,16 +29,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.daoofdev.weatherday.WeatherData.Clouds;
-import com.daoofdev.weatherday.WeatherData.Constants;
-import com.daoofdev.weatherday.WeatherData.CurrentWeatherData;
-import com.daoofdev.weatherday.WeatherData.ForecastItem;
-import com.daoofdev.weatherday.WeatherData.ForecastWeatherData;
-import com.daoofdev.weatherday.WeatherData.MainData;
-import com.daoofdev.weatherday.WeatherData.System;
-import com.daoofdev.weatherday.WeatherData.Temperature;
-import com.daoofdev.weatherday.WeatherData.WeatherItem;
-import com.daoofdev.weatherday.WeatherData.Wind;
+import com.daoofdev.weatherday.WeatherData2.Clouds;
+import com.daoofdev.weatherday.WeatherData2.Constants;
+import com.daoofdev.weatherday.WeatherData2.CurrentWeatherData;
+import com.daoofdev.weatherday.WeatherData2.ForecastItem;
+import com.daoofdev.weatherday.WeatherData2.ForecastWeatherData;
+import com.daoofdev.weatherday.WeatherData2.MainData;
+import com.daoofdev.weatherday.WeatherData2.System;
+import com.daoofdev.weatherday.WeatherData2.Temperature;
+import com.daoofdev.weatherday.WeatherData2.WeatherItem;
+import com.daoofdev.weatherday.WeatherData2.Wind;
 
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private ForecastWeatherData mForecastWeatherData = null;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private ImageView mBackgroundImage;
 
     private View mCurrentWeatherLayout;
     private View mForecastWeatherLayout;
@@ -97,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         mCurrentWeatherLayout  = findViewById(R.id.current_weather_relative_layout);
         mForecastWeatherLayout = findViewById(R.id.forecast_weather_relative_layout);
+
+        mBackgroundImage = (ImageView)findViewById(R.id.background_image);
 
         mCurrentlyInLabel                 = (TextView)findViewById(R.id.currently_in_label);
         mCurrentTempLabel                 = (TextView)findViewById(R.id.current_temp_label);
