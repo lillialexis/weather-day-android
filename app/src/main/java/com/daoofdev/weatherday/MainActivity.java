@@ -25,6 +25,9 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.daoofdev.weatherday.WeatherData.CurrentWeatherData;
+import com.daoofdev.weatherday.WeatherData.WeatherItem;
+
 public class MainActivity extends AppCompatActivity
 {
     private final static String TAG = "WeatherDay:MainActivity";
@@ -69,18 +72,18 @@ public class MainActivity extends AppCompatActivity
             WeatherMapWrapper.fetchCurrentWeatherForLocation(location, new WeatherMapWrapper.WeatherFetcherListener()
             {
                 @Override
-                public void onWeatherFetchSucceeded(WeatherData data) {
+                public void onWeatherFetchSucceeded(CurrentWeatherData data) {
                     Log.d(TAG, Util.getMethodName());
 
                     Toast.makeText(MainActivity.this, "Updating...", Toast.LENGTH_SHORT).show();
 
-                    WeatherData.WeatherItem item = data.getWeatherItems().get(0);
+                    WeatherItem item = data.getWeatherItems().get(0);
 
                     if (item != null)
                         WeatherMapWrapper.fetchIconForWeatherData(item, new WeatherMapWrapper.IconFetcherListener()
                         {
                             @Override
-                            public void onIconFetchSucceeded(WeatherData.WeatherItem item) {
+                            public void onIconFetchSucceeded(WeatherItem item) {
                                 Log.d(TAG, Util.getMethodName());
 
                                 mIconImageView.setImageBitmap(item.getIconImage());

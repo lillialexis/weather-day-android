@@ -22,6 +22,9 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+
+import com.daoofdev.weatherday.WeatherData.CurrentWeatherData;
+import com.daoofdev.weatherday.WeatherData.WeatherItem;
 import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
@@ -52,14 +55,14 @@ public class WeatherMapWrapper
 
     public interface WeatherFetcherListener
     {
-        void onWeatherFetchSucceeded(WeatherData data);
+        void onWeatherFetchSucceeded(CurrentWeatherData data);
 
         void onWeatherFetchFailed(Throwable error);
     }
 
     public interface IconFetcherListener
     {
-        void onIconFetchSucceeded(WeatherData.WeatherItem item);
+        void onIconFetchSucceeded(WeatherItem item);
 
         void onIconFetchFailed(Throwable error);
     }
@@ -109,7 +112,7 @@ public class WeatherMapWrapper
      * @param listener    The listener notified when the fetch failed or succeeded.
      * @throws IllegalArgumentException if location is null.
      */
-    public static void fetchIconForWeatherData(WeatherData.WeatherItem weatherItem, IconFetcherListener listener) throws IllegalArgumentException {
+    public static void fetchIconForWeatherData(WeatherItem weatherItem, IconFetcherListener listener) throws IllegalArgumentException {
         Log.d(TAG, Util.getMethodName());
 
         if (weatherItem == null) throw new IllegalArgumentException("Weather Item can't be null");
@@ -149,7 +152,7 @@ public class WeatherMapWrapper
                         Log.d(TAG, "Weather data: " + jsonString);
 
                         Gson gson = new Gson();
-                        WeatherData weatherData = gson.fromJson(jsonString, WeatherData.class);
+                        CurrentWeatherData weatherData = gson.fromJson(jsonString, CurrentWeatherData.class);
 
                         /* Success. Call our listener. */
                         if (weatherFetcherListener != null)
@@ -169,7 +172,7 @@ public class WeatherMapWrapper
                 case METHOD_KEY_GET_ICON:
 
                     /* Get our WeatherItem and listener from the userInfo object. */
-                    WeatherData.WeatherItem weatherItem = (WeatherData.WeatherItem)((HashMap)userInfo).get(USER_INFO_WEATHER_ITEM_KEY);
+                    WeatherItem weatherItem = (WeatherItem)((HashMap)userInfo).get(USER_INFO_WEATHER_ITEM_KEY);
                     IconFetcherListener iconFetcherListener = (IconFetcherListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
 
                     weatherItem.setIconImage(BitmapFactory.decodeByteArray(data, 0, data.length));
