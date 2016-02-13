@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private TextView  mCurrentWindDirectionLabel;
     private TextView  mCurrentCloudsLabel;
     private TextView  mCurrentHumidityLabel;
+    private TextView  mCurrentPressureLabel;
+    private TextView  mForecastTodayLabel;
     private TextView  mForecastTempLabel;
     private TextView  mForecastHighTempLabel;
     private TextView  mForecastLowTempLabel;
@@ -70,11 +72,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private TextView  mForecastPressureLabel;
     private TextView  mSunriseLabel;
     private TextView  mSunsetLabel;
+
     private ImageView mCurrentWeatherIcon;
+    private ImageView mForecastWeatherIcon;
+
+    private TextView  mRefreshingLabel;
 
     Constants.DepthUnits       mDepthUnits = Constants.DepthUnits.IN;
     Constants.TemperatureUnits mTempUnits  = Constants.TemperatureUnits.FAHRENHEIT;
     Constants.SpeedUnits       mSpeedUnits = Constants.SpeedUnits.MILES_PER_HOUR;
+
     private boolean mForecastWeatherDataCallbackReceived;
     private boolean mCurrentWeatherDataCallbackReceived;
 
@@ -93,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mCurrentWindDirectionLabel        = (TextView)findViewById(R.id.current_wind_direction_label);
         mCurrentCloudsLabel               = (TextView)findViewById(R.id.current_clouds_label);
         mCurrentHumidityLabel             = (TextView)findViewById(R.id.current_humidity_label);
+        mCurrentPressureLabel             = (TextView)findViewById(R.id.current_pressure_label);
+        mForecastTodayLabel               = (TextView)findViewById(R.id.forecast_today_label);
         mForecastTempLabel                = (TextView)findViewById(R.id.forecast_temp_label);
         mForecastHighTempLabel            = (TextView)findViewById(R.id.forecast_high_temp_label);
         mForecastLowTempLabel             = (TextView)findViewById(R.id.forecast_low_temp_label);
@@ -107,9 +116,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mSunriseLabel                     = (TextView)findViewById(R.id.sunrise_label);
         mSunsetLabel                      = (TextView)findViewById(R.id.sunset_label);
 
-        mCurrentWeatherIcon               = (ImageView)findViewById(R.id.weather_icon);
+        mCurrentWeatherIcon               = (ImageView)findViewById(R.id.current_weather_icon);
+        mForecastWeatherIcon              = (ImageView)findViewById(R.id.forecast_weather_icon);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mRefreshingLabel                  = (TextView)findViewById(R.id.refreshing_label);
+
         mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
@@ -126,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 downloadIcon(item);
 
             mCurrentWeatherDataCallbackReceived = true;
-            refreshUI();
+            updateUserInterface();
         }
 
         @Override
@@ -138,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             mCurrentWeatherData = null;
 
             mCurrentWeatherDataCallbackReceived = true;
-            refreshUI();
+            updateUserInterface();
         }
     };
 
@@ -156,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     downloadIcon(weatherItem);
 
             mForecastWeatherDataCallbackReceived = true;
-            refreshUI();
+            updateUserInterface();
         }
 
         @Override
@@ -168,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             mForecastWeatherData = null;
 
             mForecastWeatherDataCallbackReceived = true;
-            refreshUI();
+            updateUserInterface();
         }
     };
 
@@ -177,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         public void onIconFetchSucceeded(WeatherItem item) {
             Log.d(TAG, Util.getMethodName());
 
-            refreshUI();
+            updateUserInterface();
         }
 
         @Override
@@ -207,9 +218,14 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         }
     }
 
-    private void refreshUI() {
-        if (mCurrentWeatherDataCallbackReceived && mForecastWeatherDataCallbackReceived)
+    private void updateUserInterface() {
+        if (mCurrentWeatherDataCallbackReceived && mForecastWeatherDataCallbackReceived) {
             mSwipeRefreshLayout.setRefreshing(false);
+
+            mRefreshingLabel.setVisibility(View.GONE);
+        } else {
+            mRefreshingLabel.setVisibility(View.VISIBLE);
+        }
 
         MainData mainData;
         System system;
@@ -217,12 +233,14 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         Clouds clouds;
         Temperature temperature;
 
+        /* Update the UI components with the current weather data */
         if (mCurrentWeatherData != null) {
             setTextForTextViewAndShow("Currently in %s%s", mCurrentWeatherData.getName(), "", mCurrentlyInLabel);
 
             if ((mainData = mCurrentWeatherData.getMainData()) != null) {
                 setTextForTextViewAndShow("%s°%s", mainData.getPrettyTemp(mTempUnits), mTempUnits.toString(), mCurrentTempLabel);
                 setTextForTextViewAndShow("Humidity: %s%s", mainData.getHumidity(), "%", mCurrentHumidityLabel);
+                setTextForTextViewAndShow("%s%s", null, "", mCurrentPressureLabel); /* Hide pressure for now */
             }
 
             if (mCurrentWeatherData.getWeatherItems() != null && mCurrentWeatherData.getWeatherItems().get(0) != null) {
@@ -249,7 +267,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             }
         }
 
+        /* Update the UI components with the forecast weather data */
         if (mForecastWeatherData != null) {
+            setTextForTextViewAndShow("Today:%s%s", "", "", mForecastTodayLabel);
+
             if (mForecastWeatherData.getList() != null && mForecastWeatherData.getList().get(0) != null) {
                 ForecastItem forecastItem = mForecastWeatherData.getList().get(0);
 
@@ -266,14 +287,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
                     setTextForTextViewAndShow("%s%s", weatherItem.getMain(), "", mForecastMainDescriptionLabel);
                     setTextForTextViewAndShow("%s%s", weatherItem.getDescription(), "", mForecastDetailedDescriptionLabel);
+
+                    setImageForImageViewAndShow(weatherItem.getIconImage(), mForecastWeatherIcon);
                 }
 
                 setTextForTextViewAndShow("Wind: %s %s", forecastItem.getPrettySpeed(mSpeedUnits), mSpeedUnits.toString(), mForecastWindSpeedLabel);
                 setTextForTextViewAndShow("%s%s", forecastItem.getPrettyDirection(), "", mForecastWindDirectionLabel);
                 setTextForTextViewAndShow("Clouds: %s%s", forecastItem.getClouds(), "%", mForecastCloudsLabel);
-                setTextForTextViewAndShow("Rain: %s%s", forecastItem.getPrettyRain(mDepthUnits), mDepthUnits.toString(), mForecastRainLabel);
+                setTextForTextViewAndShow("Rain: %s %s", forecastItem.getPrettyRain(mDepthUnits), mDepthUnits.toString(), mForecastRainLabel);
 
-                setTextForTextViewAndShow("%s%s", null, "", mForecastPressureLabel);
+                setTextForTextViewAndShow("%s%s", null, "", mForecastPressureLabel); /* Hide pressure for now */
 
             }
         }
@@ -309,6 +332,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
+        mCurrentWeatherData = null;
+        mForecastWeatherData = null;
+
+        updateUserInterface();
+
         if (ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                             PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
@@ -344,12 +372,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 
-        mCurrentWeatherData = null;
-        mForecastWeatherData = null;
-
         mCurrentWeatherDataCallbackReceived = false;
         mForecastWeatherDataCallbackReceived = false;
 
-        refreshUI();
+        updateUserInterface();
     }
 }
