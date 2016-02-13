@@ -159,12 +159,11 @@
 
 
 
-
         <ImageView
-                android:id="@+id/weather_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-            />
+            android:id="@+id/weather_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        />
     </RelativeLayout>
 
 </FrameLayout>

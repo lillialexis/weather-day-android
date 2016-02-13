@@ -51,7 +51,7 @@ public class ForecastWeatherData {
         return mCod;
     }
 
-    public ArrayList getList() {
+    public ArrayList<ForecastItem> getList() {
         return mList;
     }
 
