@@ -47,6 +47,7 @@ public class DataFetcherTest extends AndroidTestCase
 
     }
 
+    // TODO - Use this site for testing: https://httpbin.org
     public final void testFetchingText() {
         assertTrue("Implement test case", false);
     }
@@ -86,10 +87,6 @@ public class DataFetcherTest extends AndroidTestCase
             new DataFetcher(null, listener).execute((String)url);
             semaphore.acquire();
         }
-    }
-
-    public final void testReceivingOpenWeatherMapAPIHtmlCodes() {
-        assertTrue("Implement test case", false);
     }
 
     /* Test the various pre-defined HTTP codes found in HttpURLConnection, by going to a server that
@@ -139,7 +136,6 @@ public class DataFetcherTest extends AndroidTestCase
         }
     }
 
-
     /* Test some other HTTP codes found in HttpURLConnection, by going to a server that
        serves up those codes. */
     public final void testReceivingNonHttpURLConnectionHtmlCodes() throws InterruptedException {
@@ -176,8 +172,32 @@ public class DataFetcherTest extends AndroidTestCase
         }
     }
 
-    public final void testReallyReallyLongData() {
-        assertTrue("Implement test case", false);
+    public final void testVariousSizedData() throws InterruptedException {
+        ArrayList<Integer> sizes = new ArrayList<Integer>(
+            Arrays.asList(256, 1024, 2048, 10000));
+
+        final Semaphore semaphore = new Semaphore(0);
+        String testBaseUrl = "https://httpbin.org/bytes/";
+
+        DataFetcher.DataFetcherListener listener = new DataFetcher.DataFetcherListener() {
+            @Override
+            public void onDidFetchData(Object userInfo, byte[] data) {
+                Integer expectedSize = (Integer)userInfo;
+                assertEquals("Got different sized data than expecting", expectedSize.intValue(), data.length);
+                semaphore.release();
+            }
+
+            @Override
+            public void onRequestDidFail(Object userInfo, Throwable error) {
+                assertFalse("Got an error when not expecting one.", true);
+                semaphore.release();
+            }
+        };
+
+        for (Integer size : sizes) {
+            new DataFetcher(size, listener).execute(testBaseUrl + size.toString());
+            semaphore.acquire();
+        }
     }
 
     public final void testVariousOpenWeatherMapAPICalls() {
