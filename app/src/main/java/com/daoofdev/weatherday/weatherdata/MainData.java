@@ -16,6 +16,8 @@ package com.daoofdev.weatherday.WeatherData;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.text.DecimalFormat;
+
 public class MainData {
     private final static String TAG = "WeatherDay:MainData";
 
@@ -75,11 +77,24 @@ public class MainData {
         return Constants.convertedTemp(mTemp, units);
     }
 
+    public String getPrettyTemp(Constants.TemperatureUnits units) {
+        return new DecimalFormat("#.##").format(getTemp(units));
+    }
+
     public Double getTempMax(Constants.TemperatureUnits units) {
         return Constants.convertedTemp(mTempMax, units);
+    }
+
+    public String getPrettyTempMax(Constants.TemperatureUnits units) {
+        return new DecimalFormat("#.##").format(getTempMax(units));
     }
 
     public Double getTempMin(Constants.TemperatureUnits units) {
         return Constants.convertedTemp(mTempMin, units);
     }
+
+    public String getPrettyTempMin(Constants.TemperatureUnits units) {
+        return new DecimalFormat("#.##").format(getTempMin(units));
+    }
+
 }

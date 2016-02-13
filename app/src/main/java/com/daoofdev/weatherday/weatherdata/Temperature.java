@@ -16,6 +16,8 @@ package com.daoofdev.weatherday.WeatherData;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.text.DecimalFormat;
+
 public class Temperature {
     private final static String TAG = "WeatherDay:Temperature";
 
@@ -68,24 +70,47 @@ public class Temperature {
         return Constants.convertedTemp(mDay, units);
     }
 
+    public String getPrettyDay(Constants.TemperatureUnits units) {
+        return new DecimalFormat("#.##").format(getDay(units));
+    }
+
     public Double getEve(Constants.TemperatureUnits units) {
         return Constants.convertedTemp(mEve, units);
+    }
+
+    public String getPrettyEve(Constants.TemperatureUnits units) {
+        return new DecimalFormat("#.##").format(getEve(units));
     }
 
     public Double getMax(Constants.TemperatureUnits units) {
         return Constants.convertedTemp(mMax, units);
     }
 
+    public String getPrettyMax(Constants.TemperatureUnits units) {
+        return new DecimalFormat("#.##").format(getMax(units));
+    }
+
     public Double getMin(Constants.TemperatureUnits units) {
         return Constants.convertedTemp(mMin, units);
+    }
+
+    public String getPrettyMin(Constants.TemperatureUnits units) {
+        return new DecimalFormat("#.##").format(getMin(units));
     }
 
     public Double getMorn(Constants.TemperatureUnits units) {
         return Constants.convertedTemp(mMorn, units);
     }
 
+    public String getPrettyMorn(Constants.TemperatureUnits units) {
+        return new DecimalFormat("#.##").format(getMorn(units));
+    }
+
     public Double getNight(Constants.TemperatureUnits units) {
         return Constants.convertedTemp(mNight, units);
     }
 
+    public String getPrettyNight(Constants.TemperatureUnits units) {
+        return new DecimalFormat("#.##").format(getNight(units));
+    }
 }

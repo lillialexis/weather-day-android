@@ -79,7 +79,7 @@ public class Constants {
     public enum SpeedUnits
     {
         METERS_PER_SEC("MPS"),
-        MILES_PER_HOUR("MPS");
+        MILES_PER_HOUR("MPH");
 
         private final String mIdentifier;
 
