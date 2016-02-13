@@ -59,12 +59,33 @@ public class DataFetcherTest extends AndroidTestCase
         assertTrue("Implement test case", false);
     }
 
-    public final void testInvalidParams() {
-        assertTrue("Implement test case", false);
+    public final void testNullParams() {
+        DataFetcher dataFetcher = new DataFetcher(null, null);
     }
 
-    public final void testVariousInvalidUrls() {
-        assertTrue("Implement test case", false);
+    public final void testVariousInvalidUrls() throws InterruptedException {
+        ArrayList<Object> funnyUrls = new ArrayList<Object>(
+            Arrays.asList("12345", "", null, "http://daoofdev.com/no_real"));
+
+        final Semaphore semaphore = new Semaphore(0);
+        DataFetcher.DataFetcherListener listener = new DataFetcher.DataFetcherListener() {
+            @Override
+            public void onDidFetchData(Object userInfo, byte[] data) {
+                assertTrue("Probably shouldn't be here", false);
+                semaphore.release();
+            }
+
+            @Override
+            public void onRequestDidFail(Object userInfo, Throwable error) {
+                assertNotNull("Null error... uh oh...", error);
+                semaphore.release();
+            }
+        };
+
+        for (Object url : funnyUrls) {
+            new DataFetcher(null, listener).execute((String)url);
+            semaphore.acquire();
+        }
     }
 
     public final void testReceivingOpenWeatherMapAPIHtmlCodes() {
