@@ -29,16 +29,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.daoofdev.weatherday.WeatherData2.Clouds;
-import com.daoofdev.weatherday.WeatherData2.Constants;
-import com.daoofdev.weatherday.WeatherData2.CurrentWeatherData;
-import com.daoofdev.weatherday.WeatherData2.ForecastItem;
-import com.daoofdev.weatherday.WeatherData2.ForecastWeatherData;
-import com.daoofdev.weatherday.WeatherData2.MainData;
-import com.daoofdev.weatherday.WeatherData2.System;
-import com.daoofdev.weatherday.WeatherData2.Temperature;
-import com.daoofdev.weatherday.WeatherData2.WeatherItem;
-import com.daoofdev.weatherday.WeatherData2.Wind;
+import com.daoofdev.weatherday.WeatherData.Clouds;
+import com.daoofdev.weatherday.WeatherData.Constants;
+import com.daoofdev.weatherday.WeatherData.CurrentWeatherData;
+import com.daoofdev.weatherday.WeatherData.ForecastItem;
+import com.daoofdev.weatherday.WeatherData.ForecastWeatherData;
+import com.daoofdev.weatherday.WeatherData.MainData;
+import com.daoofdev.weatherday.WeatherData.System;
+import com.daoofdev.weatherday.WeatherData.Temperature;
+import com.daoofdev.weatherday.WeatherData.WeatherItem;
+import com.daoofdev.weatherday.WeatherData.Wind;
 
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {

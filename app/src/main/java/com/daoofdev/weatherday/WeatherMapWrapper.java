@@ -22,9 +22,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import com.daoofdev.weatherday.WeatherData2.CurrentWeatherData;
-import com.daoofdev.weatherday.WeatherData2.ForecastWeatherData;
-import com.daoofdev.weatherday.WeatherData2.WeatherItem;
+import com.daoofdev.weatherday.WeatherData.CurrentWeatherData;
+import com.daoofdev.weatherday.WeatherData.ForecastWeatherData;
+import com.daoofdev.weatherday.WeatherData.WeatherItem;
 import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
