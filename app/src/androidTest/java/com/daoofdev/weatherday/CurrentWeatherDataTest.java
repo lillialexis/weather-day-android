@@ -7,7 +7,7 @@ package com.daoofdev.weatherday;
  * Mozilla Public License, version 2.0. The full text of the
  * Mozilla Public License is at https://www.mozilla.org/MPL/2.0/
  *
- * File:    WeatherDataTest.java
+ * File:    CurrentWeatherDataTest.java
  * Project: WeatherDay
  *
  * Created by Lilli Szafranski on 2/11/16.
@@ -16,10 +16,12 @@ package com.daoofdev.weatherday;
 
 import android.test.AndroidTestCase;
 
+import com.daoofdev.weatherday.WeatherData.CurrentWeatherData;
+import com.daoofdev.weatherday.WeatherData.WeatherItem;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-public class WeatherDataTest extends AndroidTestCase
+public class CurrentWeatherDataTest extends AndroidTestCase
 {
     private final static String TAG = "WeatherDay:WeatherMapWrapperTest";
 
@@ -56,8 +58,8 @@ public class WeatherDataTest extends AndroidTestCase
                 "\"name\":\"Mountain View\",\n" +
                 "\"cod\":200}";
 
-        WeatherData data = gson.fromJson(goodJson, WeatherData.class);
-        WeatherData.WeatherItem item = data.getWeatherItems().get(0);
+        CurrentWeatherData data = gson.fromJson(goodJson, CurrentWeatherData.class);
+        WeatherItem item = data.getWeatherItems().get(0);
 
         assertNotNull(data);
         assertNotNull(item);
@@ -86,16 +88,16 @@ public class WeatherDataTest extends AndroidTestCase
         assertEquals(item.getDescription(), "Sky is Clear");
         assertEquals(item.getIconIdStr(), "01n");
 
-        assertEquals(data.getMainData().getTemp(), 285.68);
+        assertEquals(data.getMainData().getTempRaw(), 285.68);
         assertEquals(data.getMainData().getHumidity(), Integer.valueOf(74));
         assertEquals(data.getMainData().getPressure(), 1016.8);
-        assertEquals(data.getMainData().getTempMin(), 284.82);
-        assertEquals(data.getMainData().getTempMax(), 286.48);
+        assertEquals(data.getMainData().getTempMinRaw(), 284.82);
+        assertEquals(data.getMainData().getTempMaxRaw(), 286.48);
         assertEquals(data.getMainData().getSeaLevel(), 1034.11);
         assertEquals(data.getMainData().getGroundLevel(), 1024.65);
 
 
-        assertEquals(data.getWind().getSpeed(), 0.96);
+        assertEquals(data.getWind().getSpeedRaw(), 0.96);
         assertEquals(data.getWind().getDeg(), 285.001);
 
         assertEquals(data.getClouds().getAll(), Integer.valueOf(0));
@@ -115,7 +117,7 @@ public class WeatherDataTest extends AndroidTestCase
                 "\"name\":\"Mountain View\",\n" +
                 "\"cod\":200}";
 
-        WeatherData data = gson.fromJson(incompleteJson, WeatherData.class);
+        CurrentWeatherData data = gson.fromJson(incompleteJson, CurrentWeatherData.class);
 
         assertNotNull(data);
 
@@ -136,10 +138,10 @@ public class WeatherDataTest extends AndroidTestCase
                 "\"name\":\"Mountain View\",\n" +
                 "\"cod\":200}";
 
-        WeatherData data = null;
+        CurrentWeatherData data = null;
         Boolean caughtException = false;
         try {
-            data = gson.fromJson(invalidJson, WeatherData.class);
+            data = gson.fromJson(invalidJson, CurrentWeatherData.class);
         } catch (JsonSyntaxException e) {
             caughtException = true;
         }
@@ -160,7 +162,7 @@ public class WeatherDataTest extends AndroidTestCase
                 "  }\n" +
                 "}}";
 
-        WeatherData data = gson.fromJson(otherJson, WeatherData.class);
+        CurrentWeatherData data = gson.fromJson(otherJson, CurrentWeatherData.class);
 
         assertNotNull(data);
 
@@ -189,8 +191,8 @@ public class WeatherDataTest extends AndroidTestCase
                 "\"name\":\"Mountain View\",\n" +
                 "\"cod\":200}";
 
-        WeatherData data = gson.fromJson(goodJson, WeatherData.class);
-        WeatherData.WeatherItem item = data.getWeatherItems().get(0);
+        CurrentWeatherData data = gson.fromJson(goodJson, CurrentWeatherData.class);
+        WeatherItem item = data.getWeatherItems().get(0);
 
         assertNotNull(data);
         assertNotNull(item);
@@ -221,4 +223,9 @@ public class WeatherDataTest extends AndroidTestCase
     public final void testInitializationWithObjectOtherThanJsonStrings() {
 //        assertTrue("Implement test case", false);
     }
+
+    public final void testTemperatureConversion() {
+//        assertTrue("Implement test case", false);
+    }
+
 }
