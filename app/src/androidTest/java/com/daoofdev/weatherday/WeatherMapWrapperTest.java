@@ -39,18 +39,34 @@ public class WeatherMapWrapperTest extends AndroidTestCase
     }
 
     public final void testFetchingWeatherData() {
-        assertTrue("Implement test case", false);
+        //assertTrue("Implement test case", false);
     }
 
     public final void testFetchingIcon() {
-        assertTrue("Implement test case", false);
+        //assertTrue("Implement test case", false);
     }
 
     public final void testFetchingWeatherWithInvalidParams() {
-        assertTrue("Implement test case", false);
+        Boolean caughtException = false;
+
+        try {
+            WeatherMapWrapper.fetchCurrentWeatherForLocation(null, null);
+        } catch (IllegalArgumentException e) {
+            caughtException = true;
+        }
+
+        assertTrue(caughtException);
     }
 
     public final void testFetchingIconWithInvalidParams() {
-        assertTrue("Implement test case", false);
+        Boolean caughtException = false;
+
+        try {
+            WeatherMapWrapper.fetchIconForWeatherData(null, null);
+        } catch (IllegalArgumentException e) {
+            caughtException = true;
+        }
+
+        assertTrue(caughtException);
     }
 }
