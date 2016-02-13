@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.net.URL;
 
 public class DataFetcher extends AsyncTask<String, String, Throwable>
@@ -70,11 +71,12 @@ public class DataFetcher extends AsyncTask<String, String, Throwable>
 
             int response = httpURLConnection.getResponseCode();
 
-            // TODO: Check the response code for errors
+            if (response >= 400) /* Error codes start at 400. */
+                return processErrorCode(response);
 
             InputStream inputStream = httpURLConnection.getInputStream();
-
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
+
             byte[] buffer = new byte[1024];
 
             int bytesRead;
@@ -104,6 +106,37 @@ public class DataFetcher extends AsyncTask<String, String, Throwable>
         } else {
             if (mListener != null) mListener.onDidFetchData(mUserInfo, mData);
         }
+    }
+
+    private Throwable processErrorCode(int errorCode) {
+        String message = "An unknown HTTP error has occurred: " + Integer.toString(errorCode);
+
+        switch (errorCode) {
+            case HttpURLConnection.HTTP_BAD_REQUEST	     :  message = "An HTTP error has occurred: 400 - Bad Request";                   break;
+            case HttpURLConnection.HTTP_UNAUTHORIZED	 :  message = "An HTTP error has occurred: 401 - Unauthorized";                  break;
+            case HttpURLConnection.HTTP_PAYMENT_REQUIRED :  message = "An HTTP error has occurred: 402 - Payment required";              break;
+            case HttpURLConnection.HTTP_FORBIDDEN	     :  message = "An HTTP error has occurred: 403 - Forbidden";                     break;
+            case HttpURLConnection.HTTP_NOT_FOUND	     :  message = "An HTTP error has occurred: 404 - Not found";                     break;
+            case HttpURLConnection.HTTP_BAD_METHOD	     :  message = "An HTTP error has occurred: 405 - Bad Method";                    break;
+            case HttpURLConnection.HTTP_NOT_ACCEPTABLE   :  message = "An HTTP error has occurred: 406 - Not acceptable";                break;
+            case HttpURLConnection.HTTP_PROXY_AUTH	     :  message = "An HTTP error has occurred: 407 - Proxy authentication required"; break;
+            case HttpURLConnection.HTTP_CLIENT_TIMEOUT   :  message = "An HTTP error has occurred: 408 - Client Timeout";                break;
+            case HttpURLConnection.HTTP_CONFLICT	     :  message = "An HTTP error has occurred: 409 - Conflict";                      break;
+            case HttpURLConnection.HTTP_GONE	         :  message = "An HTTP error has occurred: 410 - Gone";                          break;
+            case HttpURLConnection.HTTP_LENGTH_REQUIRED  :  message = "An HTTP error has occurred: 411 - Length required";               break;
+            case HttpURLConnection.HTTP_PRECON_FAILED	 :  message = "An HTTP error has occurred: 412 - Precondition failed";           break;
+            case HttpURLConnection.HTTP_ENTITY_TOO_LARGE :  message = "An HTTP error has occurred: 413 - Entity too large";              break;
+            case HttpURLConnection.HTTP_REQ_TOO_LONG	 :  message = "An HTTP error has occurred: 414 - Request too long";              break;
+            case HttpURLConnection.HTTP_UNSUPPORTED_TYPE :  message = "An HTTP error has occurred: 415 - Unsupported type";              break;
+            case HttpURLConnection.HTTP_INTERNAL_ERROR   :  message = "An HTTP error has occurred: 500 - Internal error";                break;
+            case HttpURLConnection.HTTP_NOT_IMPLEMENTED  :  message = "An HTTP error has occurred: 501 - Not implemented";               break;
+            case HttpURLConnection.HTTP_BAD_GATEWAY	     :  message = "An HTTP error has occurred: 502 - Bad Gateway";                   break;
+            case HttpURLConnection.HTTP_UNAVAILABLE	     :  message = "An HTTP error has occurred: 503 - Unavailable";                   break;
+            case HttpURLConnection.HTTP_GATEWAY_TIMEOUT  :  message = "An HTTP error has occurred: 504 - Gateway timeout";               break;
+            case HttpURLConnection.HTTP_VERSION	         :  message = "An HTTP error has occurred: 505 - Version not supported";         break;
+        }
+
+        return new HttpError(message, errorCode);
     }
 }
 
