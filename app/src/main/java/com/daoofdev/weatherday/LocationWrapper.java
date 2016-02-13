@@ -15,6 +15,7 @@ package com.daoofdev.weatherday;
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -23,12 +24,14 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+@SuppressLint("LongLogTag")
 
 /* Singleton class to encapsulate mLoc services to use anywhere in the application when needed. */
 public class LocationWrapper
@@ -45,7 +48,7 @@ public class LocationWrapper
     private static final long MIN_DISTANCE_DELTA_BETWEEN_UPDATES = 10;
 
     /* The minimum time interval between location updates, in milliseconds */
-    private static final long MIN_TIME_INTERVAL_BETWEEN_UPDATES = 1;
+    private static final long MIN_TIME_INTERVAL_BETWEEN_UPDATES = 1000 * 60 * 5;
 
     private static LocationManager locationManager = (LocationManager)WeatherDayApplication.getContext()
                                                                                            .getSystemService(Context.LOCATION_SERVICE);
@@ -54,7 +57,7 @@ public class LocationWrapper
     {
         @Override
         public void onLocationChanged(Location location) {
-
+            Log.d(TAG, "onLocationChanged - lat: " + Double.toString(location.getLatitude()) + " lon: " + Double.toString(location.getLongitude()));
         }
 
         @Override
@@ -81,17 +84,29 @@ public class LocationWrapper
     }
 
     public static void startGettingLocation() {
-//        String preferredProvider = getPreferredProvider();
-//        if (preferredProvider == null) /* Then neither provider is configured */
-//            return; // TODO: Return some kind of error status or something
-//
-//        locationManager.requestLocationUpdates(preferredProvider,
-//                                                MIN_TIME_INTERVAL_BETWEEN_UPDATES,
-//                                                MIN_DISTANCE_DELTA_BETWEEN_UPDATES, locationListener);
+        String preferredProvider = getPreferredProvider();
+        if (preferredProvider == null) /* Then neither provider is configured */
+            return; // TODO: Return some kind of error status or something
+
+        if (ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED)
+            return;
+
+        locationManager.requestLocationUpdates(preferredProvider,
+                                                MIN_TIME_INTERVAL_BETWEEN_UPDATES,
+                                                MIN_DISTANCE_DELTA_BETWEEN_UPDATES, locationListener);
     }
 
     public static void stopGettingLocation() {
-//        locationManager.removeUpdates(locationListener);
+        if (ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED)
+            return;
+
+        locationManager.removeUpdates(locationListener);
     }
 
     /**

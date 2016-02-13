@@ -16,12 +16,15 @@ package com.daoofdev.weatherday;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+
+import com.daoofdev.weatherday.WeatherData.CurrentWeatherData;
+import com.daoofdev.weatherday.WeatherData.ForecastWeatherData;
+import com.daoofdev.weatherday.WeatherData.WeatherItem;
 import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
@@ -30,36 +33,46 @@ import java.util.HashMap;
 @SuppressLint("LongLogTag")
 public class WeatherMapWrapper
 {
-    private final static String TAG = "WeatherDay:WeatherMapInterface";
+    private final static String TAG = "WeatherDay:WeatherMapWrapper";
 
     private final static String WEATHER_MAP_API_KEY = "bd70ff217db31d2f80c85e6e09b85dbf";
 
     private static final String BASE_URL = "http://api.openweathermap.org/";
 
-    private static final String GET_WEATHER_METHOD_QUERY = "data/2.5/weather?";
-    private static final String GET_ICON_METHOD_QUERY    = "img/w/";
+    private static final String GET_CURRENT_WEATHER_METHOD_QUERY  = "data/2.5/weather?";
+    private static final String GET_FORECAST_WEATHER_METHOD_QUERY = "data/2.5/forecast/daily?";
+    private static final String GET_ICON_METHOD_QUERY             = "img/w/";
 
     private static final String LAT_QUERY = "lat=";
     private static final String LON_QUERY = "&lon=";
+    private static final String CNT_QUERY = "&cnt=";
     private static final String API_QUERY = "&appid=";
 
-    private static final String METHOD_KEY_GET_WEATHER = "METHOD_KEY_GET_WEATHER";
-    private static final String METHOD_KEY_GET_ICON    = "METHOD_KEY_GET_ICON";
+    private static final String METHOD_KEY_GET_CURRENT_WEATHER  = "METHOD_KEY_GET_CURRENT_WEATHER";
+    private static final String METHOD_KEY_GET_FORECAST_WEATHER = "METHOD_KEY_GET_FORECAST_WEATHER";
+    private static final String METHOD_KEY_GET_ICON             = "METHOD_KEY_GET_ICON";
 
     private static final String USER_INFO_METHOD_KEY_KEY   = "USER_INFO_METHOD_KEY_KEY";
     private static final String USER_INFO_LISTENER_KEY     = "USER_INFO_LISTENER_KEY";
     private static final String USER_INFO_WEATHER_ITEM_KEY = "USER_INFO_WEATHER_ITEM_KEY";
 
-    public interface WeatherFetcherListener
+    public interface CurrentWeatherFetcherListener
     {
-        void onWeatherFetchSucceeded(WeatherData data);
+        void onCurrentWeatherFetchSucceeded(CurrentWeatherData data);
 
-        void onWeatherFetchFailed(Throwable error);
+        void onCurrentWeatherFetchFailed(Throwable error);
+    }
+
+    public interface ForecastWeatherFetcherListener
+    {
+        void onForecastWeatherFetchSucceeded(ForecastWeatherData data);
+
+        void onForecastWeatherFetchFailed(Throwable error);
     }
 
     public interface IconFetcherListener
     {
-        void onIconFetchSucceeded(WeatherData.WeatherItem item);
+        void onIconFetchSucceeded(WeatherItem item);
 
         void onIconFetchFailed(Throwable error);
     }
@@ -83,20 +96,48 @@ public class WeatherMapWrapper
      * @param listener The listener notified when the fetch failed or succeeded.
      * @throws IllegalArgumentException if location is null.
      */
-    public static void fetchCurrentWeatherForLocation(Location location, WeatherFetcherListener listener) throws IllegalArgumentException {
+    public static void fetchCurrentWeatherForLocation(Location location, CurrentWeatherFetcherListener listener) throws IllegalArgumentException {
         Log.d(TAG, Util.getMethodName());
 
         if (location == null) throw new IllegalArgumentException("Location can't be null");
 
         /* Create the url for this request. */
-        String url = BASE_URL + GET_WEATHER_METHOD_QUERY +
+        String url = BASE_URL + GET_CURRENT_WEATHER_METHOD_QUERY +
                 LAT_QUERY + location.getLatitude() +
-                LON_QUERY + location.getLatitude() +
+                LON_QUERY + location.getLongitude() +
                 API_QUERY + WEATHER_MAP_API_KEY;
 
         /* Create a HashMap to store my method key and the delegate. */
         HashMap<String, Object> userInfo = new HashMap<>();
-        userInfo.put(USER_INFO_METHOD_KEY_KEY, METHOD_KEY_GET_WEATHER);
+        userInfo.put(USER_INFO_METHOD_KEY_KEY, METHOD_KEY_GET_CURRENT_WEATHER);
+        userInfo.put(USER_INFO_LISTENER_KEY, listener);
+
+        /* Create a new DataFetcher Object, passing in a HashMap containing the specific method and specific delegate, then invoke the URL. */
+        new DataFetcher(userInfo, dataFetcherListener).execute(url);
+    }
+
+    /**
+     * Get's the ForecastWeatherData object from the OpenWeatherMap API for the provided location.
+     * @param location The location for which the weather is fetched. Can't be null.
+     * @param count The number of days you wanted fetched
+     * @param listener The listener notified when the fetch failed or succeeded.
+     * @throws IllegalArgumentException if location is null.
+     */
+    public static void fetchForecastWeatherForLocation(Location location, Integer count, ForecastWeatherFetcherListener listener) throws IllegalArgumentException {
+        Log.d(TAG, Util.getMethodName());
+
+        if (location == null) throw new IllegalArgumentException("Location can't be null");
+
+        /* Create the url for this request. */
+        String url = BASE_URL + GET_FORECAST_WEATHER_METHOD_QUERY +
+                LAT_QUERY + location.getLatitude() +
+                LON_QUERY + location.getLongitude() +
+                CNT_QUERY + count.toString() +
+                API_QUERY + WEATHER_MAP_API_KEY;
+
+        /* Create a HashMap to store my method key and the delegate. */
+        HashMap<String, Object> userInfo = new HashMap<>();
+        userInfo.put(USER_INFO_METHOD_KEY_KEY, METHOD_KEY_GET_FORECAST_WEATHER);
         userInfo.put(USER_INFO_LISTENER_KEY, listener);
 
         /* Create a new DataFetcher Object, passing in a HashMap containing the specific method and specific delegate, then invoke the URL. */
@@ -109,7 +150,7 @@ public class WeatherMapWrapper
      * @param listener    The listener notified when the fetch failed or succeeded.
      * @throws IllegalArgumentException if location is null.
      */
-    public static void fetchIconForWeatherData(WeatherData.WeatherItem weatherItem, IconFetcherListener listener) throws IllegalArgumentException {
+    public static void fetchIconForWeatherData(WeatherItem weatherItem, IconFetcherListener listener) throws IllegalArgumentException {
         Log.d(TAG, Util.getMethodName());
 
         if (weatherItem == null) throw new IllegalArgumentException("Weather Item can't be null");
@@ -137,30 +178,59 @@ public class WeatherMapWrapper
             switch (methodKey) {
 
                 /* In this case, it's a json string representing the current weather data. */
-                case METHOD_KEY_GET_WEATHER:
+                case METHOD_KEY_GET_CURRENT_WEATHER:
 
                     /* Get our listener from the userInfo object. */
-                    WeatherFetcherListener weatherFetcherListener = (WeatherFetcherListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
+                    CurrentWeatherFetcherListener currentWeatherFetcherListener = (CurrentWeatherFetcherListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
 
                     /* Decode the bytes into a json string, then deserialize into a WeatherData object. */
                     try {
                         String jsonString = new String(data, "UTF-8");
 
-                        Log.d(TAG, "Weather data: " + jsonString);
+                        Log.d(TAG, "Current weather data: " + jsonString);
 
                         Gson gson = new Gson();
-                        WeatherData weatherData = gson.fromJson(jsonString, WeatherData.class);
+                        CurrentWeatherData weatherData = gson.fromJson(jsonString, CurrentWeatherData.class);
 
                         /* Success. Call our listener. */
-                        if (weatherFetcherListener != null)
-                            weatherFetcherListener.onWeatherFetchSucceeded(weatherData);
+                        if (currentWeatherFetcherListener != null)
+                            currentWeatherFetcherListener.onCurrentWeatherFetchSucceeded(weatherData);
                     }
                     catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
 
                         /* Something went wrong. Call our listener. */
-                        if (weatherFetcherListener != null)
-                            weatherFetcherListener.onWeatherFetchFailed(e);
+                        if (currentWeatherFetcherListener != null)
+                            currentWeatherFetcherListener.onCurrentWeatherFetchFailed(e);
+                    }
+
+                    break;
+
+                /* In this case, it's a json string representing the current weather data. */
+                case METHOD_KEY_GET_FORECAST_WEATHER:
+
+                    /* Get our listener from the userInfo object. */
+                    ForecastWeatherFetcherListener forecastWeatherFetcherListener = (ForecastWeatherFetcherListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
+
+                    /* Decode the bytes into a json string, then deserialize into a WeatherData object. */
+                    try {
+                        String jsonString = new String(data, "UTF-8");
+
+                        Log.d(TAG, "Forecast weather data: " + jsonString);
+
+                        Gson gson = new Gson();
+                        ForecastWeatherData weatherData = gson.fromJson(jsonString, ForecastWeatherData.class);
+
+                        /* Success. Call our listener. */
+                        if (forecastWeatherFetcherListener != null)
+                            forecastWeatherFetcherListener.onForecastWeatherFetchSucceeded(weatherData);
+                    }
+                    catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+
+                        /* Something went wrong. Call our listener. */
+                        if (forecastWeatherFetcherListener != null)
+                            forecastWeatherFetcherListener.onForecastWeatherFetchFailed(e);
                     }
 
                     break;
@@ -169,7 +239,7 @@ public class WeatherMapWrapper
                 case METHOD_KEY_GET_ICON:
 
                     /* Get our WeatherItem and listener from the userInfo object. */
-                    WeatherData.WeatherItem weatherItem = (WeatherData.WeatherItem)((HashMap)userInfo).get(USER_INFO_WEATHER_ITEM_KEY);
+                    WeatherItem weatherItem = (WeatherItem)((HashMap)userInfo).get(USER_INFO_WEATHER_ITEM_KEY);
                     IconFetcherListener iconFetcherListener = (IconFetcherListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
 
                     weatherItem.setIconImage(BitmapFactory.decodeByteArray(data, 0, data.length));
@@ -190,14 +260,25 @@ public class WeatherMapWrapper
 
             switch (methodKey) {
 
-                /* In this case, call the listener's onWeatherFetchFailed method. */
-                case METHOD_KEY_GET_WEATHER:
+                /* In this case, call the listener's onCurrentWeatherFetchFailed method. */
+                case METHOD_KEY_GET_CURRENT_WEATHER:
 
                     /* Get our listener from the userInfo object, and call it. */
-                    WeatherFetcherListener weatherFetcherListener = (WeatherFetcherListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
+                    CurrentWeatherFetcherListener currentWeatherFetcherListener = (CurrentWeatherFetcherListener)((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
 
-                    if (weatherFetcherListener != null)
-                        weatherFetcherListener.onWeatherFetchFailed(error);
+                    if (currentWeatherFetcherListener != null)
+                        currentWeatherFetcherListener.onCurrentWeatherFetchFailed(error);
+
+                    break;
+
+                /* In this case, call the listener's onForecastWeatherFetchFailed method. */
+                case METHOD_KEY_GET_FORECAST_WEATHER:
+
+                    /* Get our listener from the userInfo object, and call it. */
+                    ForecastWeatherFetcherListener forecastWeatherFetcherListener = (ForecastWeatherFetcherListener) ((HashMap)userInfo).get(USER_INFO_LISTENER_KEY);
+
+                    if (forecastWeatherFetcherListener != null)
+                        forecastWeatherFetcherListener.onForecastWeatherFetchFailed(error);
 
                     break;
 
