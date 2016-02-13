@@ -79,11 +79,14 @@ public class WeatherMapWrapper
 
     /**
      * Get's the CurrentWeatherData object from the OpenWeatherMap API for the provided location.
-     * @param location The location for which the weather is fetched.
+     * @param location The location for which the weather is fetched. Can't be null.
      * @param listener The listener notified when the fetch failed or succeeded.
+     * @throws IllegalArgumentException if location is null.
      */
-    public static void fetchCurrentWeatherForLocation(Location location, WeatherFetcherListener listener) {
+    public static void fetchCurrentWeatherForLocation(Location location, WeatherFetcherListener listener) throws IllegalArgumentException {
         Log.d(TAG, Util.getMethodName());
+
+        if (location == null) throw new IllegalArgumentException("Location can't be null");
 
         /* Create the url for this request. */
         String url = BASE_URL + GET_WEATHER_METHOD_QUERY +
@@ -104,9 +107,12 @@ public class WeatherMapWrapper
      * Get's the icon file for the CurrentWeatherData object, from the OpenWeatherMap API.
      * @param weatherItem The weather item object for which the icon file is being downloaded
      * @param listener    The listener notified when the fetch failed or succeeded.
+     * @throws IllegalArgumentException if location is null.
      */
-    public static void getIconForWeatherData(WeatherData.WeatherItem weatherItem, IconFetcherListener listener) {
+    public static void fetchIconForWeatherData(WeatherData.WeatherItem weatherItem, IconFetcherListener listener) throws IllegalArgumentException {
         Log.d(TAG, Util.getMethodName());
+
+        if (weatherItem == null) throw new IllegalArgumentException("Weather Item can't be null");
 
         /* Create the url for this request. */
         String url = BASE_URL + GET_ICON_METHOD_QUERY +
