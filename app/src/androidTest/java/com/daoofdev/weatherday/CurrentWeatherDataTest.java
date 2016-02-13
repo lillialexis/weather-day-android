@@ -16,8 +16,8 @@ package com.daoofdev.weatherday;
 
 import android.test.AndroidTestCase;
 
-import com.daoofdev.weatherday.WeatherData.CurrentWeatherData;
-import com.daoofdev.weatherday.WeatherData.WeatherItem;
+import com.daoofdev.weatherday.WeatherData2.CurrentWeatherData;
+import com.daoofdev.weatherday.WeatherData2.WeatherItem;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 

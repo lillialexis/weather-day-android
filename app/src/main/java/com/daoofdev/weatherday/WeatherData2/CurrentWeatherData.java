@@ -1,4 +1,4 @@
-package com.daoofdev.weatherday.WeatherData;
+package com.daoofdev.weatherday.WeatherData2;
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
