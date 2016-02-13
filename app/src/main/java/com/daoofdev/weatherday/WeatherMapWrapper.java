@@ -104,7 +104,7 @@ public class WeatherMapWrapper
         /* Create the url for this request. */
         String url = BASE_URL + GET_CURRENT_WEATHER_METHOD_QUERY +
                 LAT_QUERY + location.getLatitude() +
-                LON_QUERY + location.getLatitude() +
+                LON_QUERY + location.getLongitude() +
                 API_QUERY + WEATHER_MAP_API_KEY;
 
         /* Create a HashMap to store my method key and the delegate. */
@@ -131,7 +131,7 @@ public class WeatherMapWrapper
         /* Create the url for this request. */
         String url = BASE_URL + GET_FORECAST_WEATHER_METHOD_QUERY +
                 LAT_QUERY + location.getLatitude() +
-                LON_QUERY + location.getLatitude() +
+                LON_QUERY + location.getLongitude() +
                 CNT_QUERY + count.toString() +
                 API_QUERY + WEATHER_MAP_API_KEY;
 

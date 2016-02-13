@@ -268,6 +268,8 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
+        LocationWrapper.startGettingLocation();
+
         if (ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                             PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
@@ -292,5 +294,12 @@ public class MainActivity extends AppCompatActivity
             WeatherMapWrapper.fetchCurrentWeatherForLocation(location, currentWeatherFetcherListener);
             WeatherMapWrapper.fetchForecastWeatherForLocation(location, 1, forecastWeatherFetcherListener);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        LocationWrapper.stopGettingLocation();
     }
 }
