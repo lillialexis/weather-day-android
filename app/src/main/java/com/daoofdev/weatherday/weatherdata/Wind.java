@@ -46,7 +46,7 @@ public class Wind {
     }
 
     public String getPrettyDirection() {
-        return Constants.prettyDirection(mDeg);
+        return Formatter.prettyDirection(mDeg);
     }
 
 }
