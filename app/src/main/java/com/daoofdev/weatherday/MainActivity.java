@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mIconImageView = (ImageView)findViewById(R.id.weatherIcon);
+        mIconImageView = (ImageView)findViewById(R.id.weather_icon);
     }
 
     @Override

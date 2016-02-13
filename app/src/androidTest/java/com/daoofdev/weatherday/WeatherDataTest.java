@@ -86,11 +86,11 @@ public class WeatherDataTest extends AndroidTestCase
         assertEquals(item.getDescription(), "Sky is Clear");
         assertEquals(item.getIconIdStr(), "01n");
 
-        assertEquals(data.getMainData().getTemp(), 285.68);
+        assertEquals(data.getMainData().getTempRaw(), 285.68);
         assertEquals(data.getMainData().getHumidity(), Integer.valueOf(74));
         assertEquals(data.getMainData().getPressure(), 1016.8);
-        assertEquals(data.getMainData().getTempMin(), 284.82);
-        assertEquals(data.getMainData().getTempMax(), 286.48);
+        assertEquals(data.getMainData().getTempMinRaw(), 284.82);
+        assertEquals(data.getMainData().getTempMaxRaw(), 286.48);
         assertEquals(data.getMainData().getSeaLevel(), 1034.11);
         assertEquals(data.getMainData().getGroundLevel(), 1024.65);
 
@@ -221,4 +221,9 @@ public class WeatherDataTest extends AndroidTestCase
     public final void testInitializationWithObjectOtherThanJsonStrings() {
 //        assertTrue("Implement test case", false);
     }
+    
+    public final void testTemperatureConversion() {
+        assertTrue("Implement test case", false);
+    }
+    
 }
