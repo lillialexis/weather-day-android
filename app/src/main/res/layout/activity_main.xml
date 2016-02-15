@@ -58,21 +58,24 @@
                         android:id="@+id/currently_in_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        />
-
-                    <TextView
-                        android:id="@+id/current_temp_label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/currently_in_label"
+                        android:textSize="@dimen/title_text_size"
                         />
 
                     <ImageView
                         android:id="@+id/current_weather_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/current_temp_label"
+                        android:layout_below="@+id/currently_in_label"
                         android:layout_toRightOf="@+id/current_temp_label"
+                        android:layout_marginLeft="@dimen/weather_icon_left_margin"
+                        />
+
+                    <TextView
+                        android:id="@+id/current_temp_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/temp_text_size"
+                        android:layout_alignBottom="@+id/current_weather_icon"
                         />
 
                     <TextView
@@ -130,29 +133,33 @@
                 <RelativeLayout
                     android:id="@+id/forecast_weather_relative_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/weather_group_top_margin">
 
                     <TextView
                         android:id="@+id/forecast_today_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="@dimen/title_text_size"
+                        />
+
+                    <ImageView
+                        android:id="@+id/forecast_weather_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/forecast_today_label"
+                        android:layout_toRightOf="@+id/forecast_temp_label"
+                        android:layout_marginLeft="@dimen/weather_icon_left_margin"
                         />
 
                     <TextView
                         android:id="@+id/forecast_temp_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/forecast_today_label"
+                        android:textSize="@dimen/temp_text_size"
+                        android:layout_alignBottom="@+id/forecast_weather_icon"
                         />
 
-
-                    <ImageView
-                        android:id="@+id/forecast_weather_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/forecast_temp_label"
-                        android:layout_toRightOf="@+id/forecast_temp_label"
-                        />
 
                     <TextView
                         android:id="@+id/forecast_high_temp_label"
