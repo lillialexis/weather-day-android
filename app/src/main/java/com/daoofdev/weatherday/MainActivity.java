@@ -87,8 +87,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     Constants.TemperatureUnits mTempUnits  = Constants.TemperatureUnits.FAHRENHEIT;
     Constants.SpeedUnits       mSpeedUnits = Constants.SpeedUnits.MILES_PER_HOUR;
 
-    private boolean mForecastWeatherDataCallbackReceived;
-    private boolean mCurrentWeatherDataCallbackReceived;
+    private boolean mForecastWeatherDataCallbackReceived = true;
+    private boolean mCurrentWeatherDataCallbackReceived  = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,9 +134,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+                                                    android.R.color.holo_green_light,
+                                                    android.R.color.holo_orange_light,
+                                                    android.R.color.holo_red_light);
     }
 
     private WeatherMapWrapper.CurrentWeatherFetcherListener currentWeatherFetcherListener = new WeatherMapWrapper.CurrentWeatherFetcherListener() {
@@ -311,10 +311,17 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         if (mCurrentWeatherDataCallbackReceived && mForecastWeatherDataCallbackReceived) {
             mSwipeRefreshLayout.setRefreshing(false);
 
-            mRefreshingLabel.setVisibility(View.GONE);
+            if (mCurrentWeatherData == null && mForecastWeatherData == null) { /* Then there was an error */
+                mRefreshingLabel.setText("There was an error retrieving weather data.");
 
-            mCurrentWeatherLayout.setVisibility(View.VISIBLE);
-            mForecastWeatherLayout.setVisibility(View.VISIBLE);
+            } else {
+                mRefreshingLabel.setVisibility(View.GONE);
+
+                mCurrentWeatherLayout.setVisibility(View.VISIBLE);
+                mForecastWeatherLayout.setVisibility(View.VISIBLE);
+            }
+
+
         }
     }
 
@@ -351,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mCurrentWeatherData = null;
         mForecastWeatherData = null;
 
+        mRefreshingLabel.setText("Refreshing...");
         mRefreshingLabel.setVisibility(View.VISIBLE);
 
         mCurrentWeatherLayout.setVisibility(View.GONE);
@@ -374,13 +382,13 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         //Toast.makeText(this, "Getting the current weather...", Toast.LENGTH_SHORT).show();
 
-        mCurrentWeatherDataCallbackReceived = false;
-        mForecastWeatherDataCallbackReceived = false;
-
         if (!WeatherMapWrapper.canConnectToOpenWeather()) {
             errorRefreshing("Can't get the current weather: Can't connect to server.");
             return;
         }
+
+        mCurrentWeatherDataCallbackReceived = false;
+        mForecastWeatherDataCallbackReceived = false;
 
         WeatherMapWrapper.fetchCurrentWeatherForLocation(location, currentWeatherFetcherListener);
         WeatherMapWrapper.fetchForecastWeatherForLocation(location, 1, forecastWeatherFetcherListener);
@@ -391,8 +399,14 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 
-        mCurrentWeatherDataCallbackReceived = false;
-        mForecastWeatherDataCallbackReceived = false;
+        mCurrentWeatherDataCallbackReceived = true;
+        mForecastWeatherDataCallbackReceived = true;
+
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override public void run() { /* Because Android is stupid... */
+                 mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         updateUserInterface();
     }
