@@ -48,7 +48,7 @@ public class LocationWrapper
     private static final long MIN_DISTANCE_DELTA_BETWEEN_UPDATES = 10;
 
     /* The minimum time interval between location updates, in milliseconds */
-    private static final long MIN_TIME_INTERVAL_BETWEEN_UPDATES = 1000 * 60 * 5;
+    private static final long MIN_TIME_INTERVAL_BETWEEN_UPDATES = 1000 * 5;
 
     private static LocationManager locationManager = (LocationManager)WeatherDayApplication.getContext()
                                                                                            .getSystemService(Context.LOCATION_SERVICE);
