@@ -16,9 +16,12 @@ package com.daoofdev.weatherday;
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 import android.Manifest;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +29,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +48,9 @@ import com.daoofdev.weatherday.WeatherData.Wind;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private final static String TAG = "WeatherDay:MainActivity";
+
+    private final static String SHARED_PREFS_KEY = "com.daoofdev.weatherday.SHARED_PREFS_KEY";
+    private final static String UNITS_PREFS_KEY = "UNITS_PREFS_KEY";
 
     private CurrentWeatherData mCurrentWeatherData = null;
     private ForecastWeatherData mForecastWeatherData = null;
@@ -83,9 +91,14 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private TextView  mRefreshingLabel;
 
-    Constants.DepthUnits       mDepthUnits = Constants.DepthUnits.IN;
-    Constants.TemperatureUnits mTempUnits  = Constants.TemperatureUnits.FAHRENHEIT;
-    Constants.SpeedUnits       mSpeedUnits = Constants.SpeedUnits.MILES_PER_HOUR;
+    private RadioGroup  mUnitsRadioGroup;
+    private RadioButton mImperialRadioButton;
+    private RadioButton mMetricRadioButton;
+
+    private Units mUnits;
+    private Constants.DepthUnits       mDepthUnits = Constants.DepthUnits.IN;
+    private Constants.TemperatureUnits mTempUnits  = Constants.TemperatureUnits.FAHRENHEIT;
+    private Constants.SpeedUnits       mSpeedUnits = Constants.SpeedUnits.MILES_PER_HOUR;
 
     private boolean mForecastWeatherDataCallbackReceived = true;
     private boolean mCurrentWeatherDataCallbackReceived  = true;
@@ -126,10 +139,14 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mSunriseLabel                     = (TextView)findViewById(R.id.sunrise_label);
         mSunsetLabel                      = (TextView)findViewById(R.id.sunset_label);
 
-        mCurrentWeatherIcon               = (ImageView)findViewById(R.id.current_weather_icon);
-        mForecastWeatherIcon              = (ImageView)findViewById(R.id.forecast_weather_icon);
+        mCurrentWeatherIcon  = (ImageView)findViewById(R.id.current_weather_icon);
+        mForecastWeatherIcon = (ImageView)findViewById(R.id.forecast_weather_icon);
 
-        mRefreshingLabel                  = (TextView)findViewById(R.id.refreshing_label);
+        mRefreshingLabel     = (TextView)findViewById(R.id.refreshing_label);
+
+        mUnitsRadioGroup     = (RadioGroup)  findViewById(R.id.units_radio_group);
+        mImperialRadioButton = (RadioButton) findViewById(R.id.imperial_units_radio);
+        mMetricRadioButton   = (RadioButton) findViewById(R.id.metric_units_radio);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
@@ -137,6 +154,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                                                     android.R.color.holo_green_light,
                                                     android.R.color.holo_orange_light,
                                                     android.R.color.holo_red_light);
+
+        Units units = loadUnits();
+        if (units == Units.IMPERIAL) {
+            mImperialRadioButton.setChecked(true);
+            mMetricRadioButton.setChecked(false);
+        } else {
+            mImperialRadioButton.setChecked(false);
+            mMetricRadioButton.setChecked(true);
+        }
+        updateUnits(units);
     }
 
     private WeatherMapWrapper.CurrentWeatherFetcherListener currentWeatherFetcherListener = new WeatherMapWrapper.CurrentWeatherFetcherListener() {
@@ -213,6 +240,50 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             Toast.makeText(MainActivity.this, "Error getting the weather item's icon.", Toast.LENGTH_SHORT).show();
         }
     };
+
+    private enum Units {
+        METRIC("METRIC"),
+        IMPERIAL("IMPERIAL");
+        private final String mIdentifier;
+        Units(String identifier) {
+            mIdentifier = identifier;
+        }
+        public String toString() { return mIdentifier; }
+        public static Units fromString(String string) { if (string.equals("METRIC")) return METRIC; else return IMPERIAL; }
+    }
+
+    private void saveUnits(Units units) {
+        SharedPreferences sharedPref = this.getSharedPreferences(SHARED_PREFS_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(UNITS_PREFS_KEY, units.toString());
+        editor.commit();
+    }
+
+    private Units loadUnits() {
+        SharedPreferences sharedPref = this.getSharedPreferences(SHARED_PREFS_KEY, Context.MODE_PRIVATE);
+        return Units.fromString(sharedPref.getString(UNITS_PREFS_KEY, "IMPERIAL"));
+    }
+
+    private void updateUnits(Units units) {
+        if (units == Units.METRIC) {
+            mDepthUnits = Constants.DepthUnits.CM;
+            mSpeedUnits = Constants.SpeedUnits.METERS_PER_SEC;
+            mTempUnits  = Constants.TemperatureUnits.CELSIUS;
+        } else {
+            mDepthUnits = Constants.DepthUnits.IN;
+            mSpeedUnits = Constants.SpeedUnits.MILES_PER_HOUR;
+            mTempUnits  = Constants.TemperatureUnits.FAHRENHEIT;
+        }
+
+        saveUnits(units);
+    }
+
+    public void onToggleUnits(View view) {
+        if (view == mImperialRadioButton) updateUnits(Units.IMPERIAL);
+        else                              updateUnits(Units.METRIC);
+
+        updateUserInterface();
+    }
 
     private void setTextForTextViewAndShow(String formatter, Object value, String unitStr, TextView textView) {
         if (value != null) {
@@ -319,9 +390,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
                 mCurrentWeatherLayout.setVisibility(View.VISIBLE);
                 mForecastWeatherLayout.setVisibility(View.VISIBLE);
+                mUnitsRadioGroup.setVisibility(View.VISIBLE);
             }
-
-
         }
     }
 
@@ -363,6 +433,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         mCurrentWeatherLayout.setVisibility(View.GONE);
         mForecastWeatherLayout.setVisibility(View.GONE);
+        mUnitsRadioGroup.setVisibility(View.GONE);
 
         if (ActivityCompat.checkSelfPermission(WeatherDayApplication.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                             PackageManager.PERMISSION_GRANTED &&
