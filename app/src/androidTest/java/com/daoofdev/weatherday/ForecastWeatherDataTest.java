@@ -16,10 +16,7 @@ package com.daoofdev.weatherday;
 
 import android.test.AndroidTestCase;
 
-import com.daoofdev.weatherday.WeatherData.CurrentWeatherData;
-import com.daoofdev.weatherday.WeatherData.WeatherItem;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
 public class ForecastWeatherDataTest extends AndroidTestCase
 {

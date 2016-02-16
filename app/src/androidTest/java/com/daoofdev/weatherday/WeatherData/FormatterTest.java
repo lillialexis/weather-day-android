@@ -16,8 +16,6 @@ package com.daoofdev.weatherday.WeatherData;
 
 import android.test.AndroidTestCase;
 
-import com.daoofdev.weatherday.WeatherData.Formatter;
-
 public class FormatterTest extends AndroidTestCase {
     private final static String TAG = "WeatherDay:FormatterTest";
 
@@ -37,6 +35,8 @@ public class FormatterTest extends AndroidTestCase {
 
     public final void testPrettyTime() {
         //assertTrue("Implement test case", false);
+
+        // TODO: Test various formats and stuff
     }
 
     public final void testPrettyDirection() {
@@ -53,6 +53,8 @@ public class FormatterTest extends AndroidTestCase {
         assertEquals("N",   Formatter.prettyDirection(11.24));
         assertEquals("NNE", Formatter.prettyDirection(11.25));
         assertEquals("NNE", Formatter.prettyDirection(11.26));
+
+        // TODO: Test all of these
 //        assertEquals("NE",  Formatter.prettyDirection());
 //        assertEquals("NEE", Formatter.prettyDirection());
 //        assertEquals("E",   Formatter.prettyDirection());

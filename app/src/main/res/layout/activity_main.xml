@@ -6,10 +6,6 @@
     android:id="@+id/swipe_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.daoofdev.weatherday.MainActivity">
 
     <ScrollView
@@ -37,9 +33,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/background_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/background_800"
+                android:scaleType="centerCrop"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -51,6 +58,7 @@
                         android:id="@+id/currently_in_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="@dimen/title_text_size"
                         />
 
                     <TextView
@@ -58,14 +66,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/currently_in_label"
+                        android:textSize="@dimen/temp_text_size"
                         />
 
                     <ImageView
                         android:id="@+id/current_weather_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/current_temp_label"
+                        android:layout_marginLeft="@dimen/weather_icon_left_margin"
                         android:layout_toRightOf="@+id/current_temp_label"
+                        android:layout_alignBottom="@+id/current_temp_label"
                         />
 
                     <TextView
@@ -123,28 +133,31 @@
                 <RelativeLayout
                     android:id="@+id/forecast_weather_relative_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/weather_group_top_margin">
 
                     <TextView
                         android:id="@+id/forecast_today_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="@dimen/title_text_size"
                         />
 
                     <TextView
                         android:id="@+id/forecast_temp_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="@dimen/temp_text_size"
                         android:layout_below="@+id/forecast_today_label"
                         />
-
 
                     <ImageView
                         android:id="@+id/forecast_weather_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/forecast_temp_label"
+                        android:layout_marginLeft="@dimen/weather_icon_left_margin"
                         android:layout_toRightOf="@+id/forecast_temp_label"
+                        android:layout_alignBottom="@+id/forecast_temp_label"
                         />
 
                     <TextView
@@ -218,11 +231,18 @@
                         android:layout_below="@+id/forecast_humidity_label"
                         />
 
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/sunrise_sunset_weather_relative_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
                     <TextView
                         android:id="@+id/sunrise_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/forecast_pressure_label"
+
                         />
 
                     <TextView
@@ -234,6 +254,37 @@
 
                 </RelativeLayout>
 
+                <RadioGroup
+                    android:id="@+id/units_radio_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/weather_group_top_margin">
+
+                    <TextView
+                        android:id="@+id/units_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Units"
+                        android:textSize="@dimen/title_text_size"/>
+
+                    <RadioButton
+                        android:id="@+id/imperial_units_radio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Imperial"
+                        android:onClick="onToggleUnits"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/metric_units_radio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Metric"
+                        android:onClick="onToggleUnits"
+                        />
+
+                </RadioGroup>
+
             </LinearLayout>
 
             <TextView
@@ -241,7 +292,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:paddingTop="100dp"
                 android:text="Refreshing..."
                 />
 

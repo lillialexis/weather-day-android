@@ -15,7 +15,6 @@ package com.daoofdev.weatherday.WeatherData;
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.internal.ConstructorConstructor;
 
 public class System {
     private final static String TAG = "WeatherDay:System";
